@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/nav_legal_resources"
+        android:icon="@drawable/ic_resource"
+        android:title="Legal Resources" />
+
+    <item
+        android:id="@+id/nav_case_management"
+        android:icon="@drawable/ic_contacts"
+        android:title="Case Management" />
+
+    <item
+        android:id="@+id/nav_ai_assistant"
+        android:icon="@drawable/ic_settings"
+        android:title="AI Assistant" />
+
+</menu>

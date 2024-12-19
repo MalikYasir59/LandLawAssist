@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="secondary">#26A69A</color>
+    <color name="secondary_dark">#00897B</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="background">#FAFAFA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#B00020</color>
+
+    <color name="black_60">#FF0000</color>
+
+    <!-- Case status colors -->
+    <color name="status_active">#4CAF50</color>
+    <color name="status_pending">#FFA000</color>
+    <color name="status_closed">#757575</color>
+    <color name="status_default">#2196F3</color>
+
+    <color name="rating_bar_tint">@color/primary</color>
+
+    <!-- Add this color -->
+    <color name="reply_background">#F5F5F5</color>
+
+    <color name="notification_badge">#F44336</color>
+
+    <!-- Notification Lights -->
+    <color name="notification_light_reviews">#FF4081</color>
+    <color name="notification_light_cases">#2196F3</color>
+
+    <color name="success">#4CAF50</color>
+
+    <!-- Chart Colors -->
+    <color name="chart_color_1">#2196F3</color>
+    <color name="chart_color_2">#4CAF50</color>
+    <color name="chart_color_3">#FFC107</color>
+    <color name="chart_color_4">#9C27B0</color>
+
+    <color name="text_primary">#DE000000</color>
+    <color name="divider">#1F000000</color>
+
+
+
+    <color name="accent">#FF4081</color>
+    <color name="hint_color">#B3FFFFFF</color>
+
+
+
+    <color name="selector_bottom_nav">#18FF07</color>
+    <color name="selector_bottom_nav2">#18FF07</color>
+</resources>

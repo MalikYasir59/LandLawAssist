@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "589954382377",
+    "project_id": "landlawassist-702aa",
+    "storage_bucket": "landlawassist-702aa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589954382377:android:c0ba4cf8ade1347da3fa38",
+        "android_client_info": {
+          "package_name": "com.malikyasir.landlawassist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZBloq8Z6Qc3_9MDQfuw5uW_19qtTnFFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
