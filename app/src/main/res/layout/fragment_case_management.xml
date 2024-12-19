@@ -1,21 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
-    <TextView
+    <!-- Main Layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- AppBar with Title and Filter Chips -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/rating_bar_tint"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="My Cases"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Filter Chips inside Horizontal Scroll -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="8dp">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/statusChipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true">
+
+                    <!-- Active Chip -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipActive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active"
+                        android:tag="ACTIVE"
+                        style="@style/Widget.MaterialComponents.Chip.Filter" />
+
+                    <!-- Pending Chip -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPending"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pending"
+                        android:tag="PENDING"
+                        style="@style/Widget.MaterialComponents.Chip.Filter" />
+
+                    <!-- Closed Chip -->
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chipClosed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Closed"
+                        android:tag="CLOSED"
+                        style="@style/Widget.MaterialComponents.Chip.Filter" />
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- FrameLayout for RecyclerView and Empty State -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/casesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:clipToPadding="false" />
+
+            <!-- Empty State -->
+            <LinearLayout
+                android:id="@+id/emptyStateLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <!-- App Logo -->
+                <ImageView
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:alpha="0.5"
+                    android:src="@drawable/app_logo" />
+
+                <!-- Empty State Message -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="No cases found"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black" />
+
+            </LinearLayout>
+
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addCaseFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Case Management"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Manage and track all your legal cases here." />
-</LinearLayout>
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:contentDescription="Add Case"
+        android:src="@drawable/ic_resource"
+        app:fabSize="normal" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

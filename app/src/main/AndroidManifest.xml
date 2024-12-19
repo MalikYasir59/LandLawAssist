@@ -15,27 +15,27 @@
         android:theme="@style/Theme.LandLawAssist"
         tools:targetApi="31">
 
-        <!-- Splash screen as the launcher activity -->
+        <activity
+            android:name=".Home.casedetail"
+            android:exported="false" />
+
+
+       
         <activity
             android:name=".Home.splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Login Form -->
+        </activity> <!-- Login Form -->
         <activity
             android:name=".Auth.LoginForm"
-            android:exported="true" />
-
-        <!-- Signup Form -->
+            android:exported="true" /> <!-- Signup Form -->
         <activity
             android:name=".Auth.SignupForm"
-            android:exported="false" />
-
-        <!-- Main Activity -->
+            android:exported="false" /> <!-- Main Activity -->
         <activity
             android:name=".Home.MainActivity"
             android:exported="true" />

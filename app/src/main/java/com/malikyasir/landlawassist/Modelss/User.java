@@ -1,4 +1,4 @@
-package com.malikyasir.landlawassist.Models;
+package com.malikyasir.landlawassist.Modelss;
 
 public class User {
     private String fullName;   // Matches fullNameInput
