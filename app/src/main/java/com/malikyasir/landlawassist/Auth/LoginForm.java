@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.malikyasir.landlawassist.Home.MainActivity;
 import com.malikyasir.landlawassist.R;
 
@@ -20,24 +21,27 @@ public class LoginForm extends AppCompatActivity {
 
     private TextInputEditText emailInput, passwordInput;
     private ProgressBar progressBar;
-    private FirebaseAuth mAuth; // Correctly declare mAuth
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize Firebase Auth instance
+        // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Check if the user is already logged in
+        // Clear any existing auth state
         if (mAuth.getCurrentUser() != null) {
-            // Redirect authenticated users to MainActivity
-            startActivity(new Intent(LoginForm.this, MainActivity.class));
-            finish();
+            mAuth.signOut();
+        }
+
+        // Redirect if already logged in
+        if (mAuth.getCurrentUser() != null) {
+            navigateToMainActivity();
             return;
         }
 
-        // Set content view for the login form
+        // Set layout
         setContentView(R.layout.activity_login_form);
 
         // Bind UI elements
@@ -48,51 +52,33 @@ public class LoginForm extends AppCompatActivity {
         TextView forgotPasswordText = findViewById(R.id.forgotPasswordText);
         TextView registerText = findViewById(R.id.registerText);
 
-        // Login button click
+        // Set up listeners
         loginButton.setOnClickListener(v -> loginUser());
-
-        // Navigate to Signup
-        registerText.setOnClickListener(v -> {
-            startActivity(new Intent(LoginForm.this, SignupForm.class));
-            finish();
-        });
-
-        // Forgot password
-        forgotPasswordText.setOnClickListener(v -> handleForgotPassword());
+        registerText.setOnClickListener(v -> startActivity(new Intent(this, SignupForm.class)));
+        forgotPasswordText.setOnClickListener(v -> sendPasswordResetEmail());
     }
 
     private void loginUser() {
         String email = emailInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim();
 
-        // Validate inputs
-        if (TextUtils.isEmpty(email)) {
-            emailInput.setError("Email is required");
-            return;
-        }
-        if (TextUtils.isEmpty(password)) {
-            passwordInput.setError("Password is required");
-            return;
-        }
+        if (!validateInputs(email, password)) return;
 
         progressBar.setVisibility(View.VISIBLE);
 
-        // Firebase login
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
-                        Toast.makeText(LoginForm.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
                         navigateToMainActivity();
                     } else {
-                        Toast.makeText(LoginForm.this,
-                                "Login failed: " + task.getException().getMessage(),
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void handleForgotPassword() {
+    private void sendPasswordResetEmail() {
         String email = emailInput.getText().toString().trim();
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(this, "Please enter your email first", Toast.LENGTH_SHORT).show();
@@ -107,13 +93,25 @@ public class LoginForm extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Password reset email sent successfully", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(this, "Failed to send reset email", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Failed to send reset email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
+    private boolean validateInputs(String email, String password) {
+        if (TextUtils.isEmpty(email)) {
+            emailInput.setError("Email is required");
+            return false;
+        }
+        if (TextUtils.isEmpty(password)) {
+            passwordInput.setError("Password is required");
+            return false;
+        }
+        return true;
+    }
+
     private void navigateToMainActivity() {
-        startActivity(new Intent(LoginForm.this, MainActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 }

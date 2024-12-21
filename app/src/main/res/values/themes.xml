@@ -6,4 +6,10 @@
     </style>
 
     <style name="Theme.LandLawAssist" parent="Base.Theme.LandLawAssist" />
+
+    <style name="Theme.LandLawAssist.NoActionBar" parent="Theme.LandLawAssist">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>
