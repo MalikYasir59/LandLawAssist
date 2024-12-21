@@ -167,20 +167,43 @@
                     app:icon="@drawable/ic_upload" />
             </LinearLayout>
 
+
+
+
+            <!-- Notes Section -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="Timeline"
+                android:text="Case Notes"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
+            <!-- Notes RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/timelineRecyclerView"
+                android:id="@+id/notesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:nestedScrollingEnabled="false" />
+
+            <!-- Documents Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="Documents"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/documentsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"/>
+
+
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

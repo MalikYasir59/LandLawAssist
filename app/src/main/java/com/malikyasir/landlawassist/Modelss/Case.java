@@ -8,9 +8,11 @@ public class Case {
     private String caseNumber;
     private long filingDate;
     private String id;
-    private String status;
+    private String status = "ACTIVE";
 
     public Case() {
+        // Required empty constructor for Firestore
+        this.status = "ACTIVE";  // Set default status
     }
 
     public Case(String userId, String title, String description, String court) {
@@ -18,7 +20,7 @@ public class Case {
         this.title = title;
         this.description = description;
         this.court = court;
-        this.status = "ACTIVE";
+        this.status = "ACTIVE";  // Set default status
     }
 
     // Getters and setters
@@ -79,10 +81,10 @@ public class Case {
     }
 
     public String getStatus() {
-        return status;
+        return status != null ? status : "ACTIVE";
     }
 
     public void setStatus(String status) {
-        this.status = status;
+        this.status = status != null ? status : "ACTIVE";
     }
 }

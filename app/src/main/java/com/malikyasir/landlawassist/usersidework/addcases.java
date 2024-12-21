@@ -141,6 +141,7 @@ public class addcases extends BottomSheetDialogFragment {
         Case newCase = new Case(userId, title, description, court);
         newCase.setCaseNumber(caseNumber);
         newCase.setFilingDate(filingDate.getTimeInMillis());
+        newCase.setStatus("ACTIVE");
 
         db.collection("cases").add(newCase)
             .addOnSuccessListener(documentReference -> {
@@ -152,12 +153,7 @@ public class addcases extends BottomSheetDialogFragment {
                 dismiss();
             })
             .addOnFailureListener(e -> {
-                String errorMessage = e.getMessage();
-                if (errorMessage != null && errorMessage.contains("PERMISSION_DENIED")) {
-                    showToastAndReset("You don't have permission to add cases");
-                } else {
-                    showToastAndReset("Error adding case: " + errorMessage);
-                }
+                showToastAndReset("Error adding case: " + e.getMessage());
             });
     }
 
