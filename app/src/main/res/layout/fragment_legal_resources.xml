@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Legal Resources"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:layout_gravity="center"/>
 
-    <TextView
+    <!-- Debug button - remove in production -->
+    <Button
+        android:id="@+id/debugButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Find helpful legal documents, articles, and guides." />
-</LinearLayout>
+        android:layout_gravity="bottom|center"
+        android:text="Reload Data"
+        android:visibility="gone"/>
+
+</FrameLayout>
