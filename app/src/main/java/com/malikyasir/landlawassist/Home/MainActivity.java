@@ -34,6 +34,10 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.button.MaterialButton;
 import java.util.HashMap;
 import java.util.Map;
+import android.app.ProgressDialog;
+import androidx.appcompat.app.AppCompatDelegate;
+import android.widget.RadioGroup;
+import android.os.Handler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Apply theme before super.onCreate()
+        String savedTheme = getSharedPreferences("app_settings", MODE_PRIVATE)
+            .getString("theme_mode", "light");
+        if ("dark".equals(savedTheme)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
@@ -72,6 +85,16 @@ public class MainActivity extends AppCompatActivity {
         setupNavigationDrawer();
         setupToolbar();
         setupBottomNavigationView();
+
+        // In onCreate() after initializing navigationView
+        View headerView = navigationView.getHeaderView(0);
+        userImageView = headerView.findViewById(R.id.nav_user_image);
+
+
+        // Initialize main menu
+        Menu main_menu = navigationView.getMenu();
+
+        // Load user data
         loadUserData();
     }
 
@@ -104,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
     private void setupNavigationDrawer() {
         View headerView = navigationView.getHeaderView(0);
         userImageView = headerView.findViewById(R.id.nav_user_image);
-        userNameText = headerView.findViewById(R.id.nav_user_name);
-        userEmailText = headerView.findViewById(R.id.nav_user_email);
+
+
 
         userImageView.setOnClickListener(v -> pickImage());
 
@@ -128,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
     private void loadUserData() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            db.collection("users").document(user.getUid())
+            String userId = user.getUid();
+            db.collection("users").document(userId)
                 .get()
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
@@ -136,17 +160,19 @@ public class MainActivity extends AppCompatActivity {
                         String email = document.getString("email");
                         String imageUrl = document.getString("profileImage");
 
-                        userNameText.setText(fullName);
-                        userEmailText.setText(email);
 
-                        if (imageUrl != null) {
+
+                        // Load profile image if exists
+                        if (imageUrl != null && !imageUrl.isEmpty()) {
                             Glide.with(this)
                                 .load(imageUrl)
                                 .placeholder(R.drawable.profileuser)
                                 .into(userImageView);
                         }
                     }
-                });
+                })
+                .addOnFailureListener(e -> 
+                    Toast.makeText(this, "Error loading user data", Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -173,42 +199,64 @@ public class MainActivity extends AppCompatActivity {
                 .child("profile_images")
                 .child(userId + ".jpg");
 
+            // Show progress dialog
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Uploading image...");
+            progressDialog.show();
+
             storageRef.putFile(userImageUri)
                 .addOnSuccessListener(taskSnapshot -> {
                     storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        updateProfileImageUrl(uri.toString());
-                        Glide.with(this)
-                            .load(userImageUri)
-                            .into(userImageView);
+                        // Update profile image URL in Firestore
+                        db.collection("users").document(userId)
+                            .update("profileImage", uri.toString())
+                            .addOnSuccessListener(aVoid -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(this, "Profile image updated successfully", 
+                                    Toast.LENGTH_SHORT).show();
+                                loadUserData(); // Refresh UI
+                            })
+                            .addOnFailureListener(e -> {
+                                progressDialog.dismiss();
+                                Toast.makeText(this, "Failed to update profile image", 
+                                    Toast.LENGTH_SHORT).show();
+                            });
                     });
                 })
-                .addOnFailureListener(e -> 
-                    Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show();
+                });
         }
-    }
-
-    private void updateProfileImageUrl(String imageUrl) {
-        String userId = mAuth.getCurrentUser().getUid();
-        db.collection("users").document(userId)
-            .update("profileImage", imageUrl);
     }
 
     private void showEditProfileDialog() {
         View view = getLayoutInflater().inflate(R.layout.dialog_edit_profile, null);
+        CircleImageView profileImageView = view.findViewById(R.id.profileImageView);
         TextInputEditText streetAddressInput = view.findViewById(R.id.streetAddressInput);
         TextInputEditText countryInput = view.findViewById(R.id.countryInput);
         MaterialButton saveButton = view.findViewById(R.id.saveButton);
+        MaterialButton selectImageButton = view.findViewById(R.id.selectImageButton);
 
-        // Load current values
+        // Load current profile image
         String userId = mAuth.getCurrentUser().getUid();
         db.collection("users").document(userId)
             .get()
             .addOnSuccessListener(document -> {
                 if (document.exists()) {
+                    String imageUrl = document.getString("profileImage");
+                    if (imageUrl != null) {
+                        Glide.with(this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.profileuser)
+                            .into(profileImageView);
+                    }
                     streetAddressInput.setText(document.getString("streetAddress"));
                     countryInput.setText(document.getString("country"));
                 }
             });
+
+        selectImageButton.setOnClickListener(v -> pickImage());
 
         AlertDialog dialog = new AlertDialog.Builder(this)
             .setView(view)
@@ -249,11 +297,60 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showSettingsDialog() {
-        // Implement settings dialog with day/night mode
+        View view = getLayoutInflater().inflate(R.layout.dialog_settings_feedback, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setView(view)
+            .create();
+
+        // Share App
+        view.findViewById(R.id.shareAppCard).setOnClickListener(v -> {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "LandLawAssist");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, 
+                "Check out LandLawAssist - Your Legal Assistant App\n" +
+                "Download it from: https://play.google.com/store/apps/details?id=" + 
+                getPackageName());
+            startActivity(Intent.createChooser(shareIntent, "Share via"));
+        });
+
+        // Rate App
+        view.findViewById(R.id.rateAppCard).setOnClickListener(v -> {
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=" + getPackageName())));
+            } catch (android.content.ActivityNotFoundException e) {
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=" + getPackageName())));
+            }
+        });
+
+        view.findViewById(R.id.closeButton).setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
     }
 
     private void showHelpDialog() {
-        // Implement help & support dialog
+        View view = getLayoutInflater().inflate(R.layout.dialog_help_support, null);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+            .setView(view)
+            .create();
+
+        // Setup click listeners for email and phone
+        view.findViewById(R.id.emailContainer).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:yasirramzan39@gmail.com"));
+            startActivity(Intent.createChooser(intent, "Send email"));
+        });
+
+        view.findViewById(R.id.phoneContainer).setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:03248025779"));
+            startActivity(intent);
+        });
+
+        view.findViewById(R.id.closeButton).setOnClickListener(v -> dialog.dismiss());
+        
+        dialog.show();
     }
 
     private void signOut() {
@@ -288,10 +385,8 @@ public class MainActivity extends AppCompatActivity {
         if (isHomeFragment()) {
             getMenuInflater().inflate(R.menu.main_menu, menu);
             return true;
-        } else {
-            menu.clear(); // Clear any existing menu items
-            return true;
         }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -307,16 +402,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Only handle options for home fragment
-        if (isHomeFragment()) {
-            if (item.getItemId() == android.R.id.home) {
-                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-                return true;
-            }
+        int id = item.getItemId();
+        if (id == R.id.notificationContainer) {
+            // Handle notifications
+            return true;
+        } else if (id == R.id.nav_settings) {
+            showSettingsDialog();
+            return true;
+        } else if (id == R.id.nav_logout) {
+            signOut();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -402,5 +497,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadUserData(); // Refresh user data when activity resumes
+    }
+
+    @Override
+    protected void onDestroy() {
+        // Remove any callbacks that might be pending
+        new Handler().removeCallbacksAndMessages(null);
+        super.onDestroy();
     }
 }

@@ -4,53 +4,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="#2B2727">
 
     <!-- Top Section with Background Image -->
+
+    <!-- Quick Actions Section -->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="200dp"
+        android:layout_height="189dp"
         android:background="@drawable/top_section_background"
-        android:paddingBottom="24dp"
+        android:clipToOutline="true"
         android:elevation="4dp"
-        android:clipToOutline="true">
+        android:minHeight="200dp"
+        android:paddingBottom="24dp">
 
         <!-- Profile Section -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="182dp"
             android:orientation="vertical">
 
             <!-- Profile and Notification Row -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="78dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="16dp"
-                android:gravity="center_vertical">
+                android:padding="16dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profileImage"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:layout_width="47dp"
+                    android:layout_height="46dp"
+                    android:elevation="4dp"
                     android:src="@drawable/profileuser"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="#FFFFFF"/>
+                    app:civ_border_color="#0C0606"
+                    app:civ_border_width="3dp" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="199dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Welcome"
                         android:textColor="#E0E0E0"
-                        android:textSize="16sp"/>
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/userName"
@@ -58,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <!-- Notification with Badge -->
@@ -73,7 +77,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:src="@drawable/ic_notification"
-                        app:tint="#FFFFFF"/>
+                        app:tint="#FFFFFF" />
 
                     <TextView
                         android:id="@+id/notificationBadge"
@@ -84,72 +88,183 @@
                         android:gravity="center"
                         android:text="0"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp"/>
+                        android:textSize="12sp" />
                 </FrameLayout>
             </LinearLayout>
 
             <!-- Profile Completion Card -->
+
+            <LinearLayout
+                android:layout_width="361dp"
+                android:layout_height="84dp"
+                android:layout_marginLeft="18dp"
+                android:background="@drawable/dark_card_background"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/profileStatusText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Complete your profile"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profileStatusDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Completing your profile will make easier for you find the best lawyers"
+                        android:textColor="#9E9E9E" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="16dp">
+
+                    <ProgressBar
+                        android:id="@+id/profileProgress"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="40"
+                        android:progressDrawable="@drawable/profile_progress_drawable" />
+                </FrameLayout>
+            </LinearLayout>
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/profileCompletionCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="55dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="0dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="16dp"
-                    android:background="@drawable/dark_card_background">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/profileStatusText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Complete your profile"
-                            android:textColor="#FFFFFF"
-                            android:textSize="20sp"
-                            android:textStyle="bold"/>
-
-                        <TextView
-                            android:id="@+id/profileStatusDescription"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Completing your profile will make easier for you find the best lawyers"
-                            android:textColor="#9E9E9E"/>
-                    </LinearLayout>
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="16dp">
-
-                        <ProgressBar
-                            android:id="@+id/profileProgress"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:indeterminate="false"
-                            android:progress="40"
-                            android:progressDrawable="@drawable/profile_progress_drawable"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:max="100"/>
-                    </FrameLayout>
-                </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
     </FrameLayout>
 
-    <!-- Rest of your content goes here -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            android:spacing="8dp">
+
+            <!-- Find Lawyers Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/findLawyersCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_search"
+                        app:tint="@color/background" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Find Lawyers"
+                        android:textColor="@color/background"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- View My Cases Button -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/viewCasesCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:src="@drawable/ic_case"
+                        app:tint="@color/background"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="View My Cases"
+                        android:textStyle="bold"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/background"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Featured Lawyers Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:text="Featured Lawyers"
+            android:textColor="@color/primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Update ViewPager2 -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/lawyerViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="317dp" />
+
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

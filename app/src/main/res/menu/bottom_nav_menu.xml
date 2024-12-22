@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/nav_case_management"
-        android:icon="@drawable/ic_contacts"
+        android:icon="@drawable/case_management"
         android:title="Case Management" />
 
     <item

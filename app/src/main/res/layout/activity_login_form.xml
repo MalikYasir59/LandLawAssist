@@ -16,17 +16,17 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="32dp"
-            android:src="@drawable/app_logo"
+            android:src="@drawable/applogoland"
             android:contentDescription="App Logo"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/app_name"
+            android:text="@string/slogan"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="@color/primary"/>
+            android:textColor="@color/background"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
