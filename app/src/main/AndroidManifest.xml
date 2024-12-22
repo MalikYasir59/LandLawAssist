@@ -83,6 +83,16 @@
             android:exported="false"
             android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.LandLawAssist"/>
+
+        <activity
+            android:name=".Home.DocumentViewerActivity"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|screenSize">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home.MainActivity" />
+        </activity>
     </application>
 
 
