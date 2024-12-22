@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
+    android:background="@drawable/loginback"
     android:padding="16dp">
 
     <LinearLayout
@@ -25,7 +25,7 @@
             android:layout_marginTop="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/accent"
+            app:boxStrokeColor="#FFFFFF"
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -33,19 +33,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Full Name"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#F3F1F1"
                 android:drawableRight="@drawable/profileuser"
                 android:inputType="textPersonName"
-                android:textColor="@color/white"
-                android:textColorHint="@color/hint_color" />
+           />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            app:boxStrokeColor="#FFFFFF"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/accent"
+
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -53,10 +55,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
+                app:boxStrokeColor="#FFFFFF"
                 android:drawableRight="@drawable/mail"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/white"
-                android:textColorHint="@color/hint_color" />
+                android:textColor="#FFFFFF"
+                android:textColorHint="#F3F1F1"
+              />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -66,7 +70,8 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxBackgroundMode="outline"
             app:passwordToggleEnabled="true"
-            app:boxStrokeColor="@color/accent"
+
+            app:boxStrokeColor="#FFFFFF"
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -75,8 +80,9 @@
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:textColor="@color/white"
-                android:textColorHint="@color/hint_color" />
+                android:textColor="#FFFFFF"
+                android:textColorHint="#F3F1F1"
+              />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -85,7 +91,8 @@
             android:layout_marginTop="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/accent"
+
+            app:boxStrokeColor="#FFFFFF"
             app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -95,8 +102,10 @@
                 android:hint="Phone Number"
                 android:drawableRight="@drawable/telephonecall"
                 android:inputType="phone"
-                android:textColor="@color/white"
-                android:textColorHint="@color/hint_color" />
+                android:textColor="#FFFFFF"
+                android:textColorHint="#F3F1F1"
+
+             />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -105,18 +114,20 @@
             android:layout_marginTop="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/accent"
-            app:hintTextColor="@color/white">
+            app:boxStrokeColor="@color/background"
+            app:hintTextColor="@color/background">
 
             <AutoCompleteTextView
                 android:id="@+id/userTypeSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
                 android:drawableRight="@drawable/about"
-                android:textColor="@color/white"
-                android:textColorHint="@color/hint_color"
-                android:hint="User" />
+                android:hint="User"
+
+                android:inputType="none"
+                android:textColor="@color/background"
+
+                android:textColorHint="@color/background" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
@@ -126,8 +137,8 @@
             android:layout_marginTop="24dp"
 
             android:text="Register"
-            android:textColor="@color/white"
-
+            app:backgroundTint="#00796B"
+            android:textColor="#000000"
             android:padding="12dp" />
 
         <ProgressBar

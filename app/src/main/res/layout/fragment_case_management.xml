@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="My Cases"
+                android:text="Status"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -84,6 +84,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="8dp"
+                android:background="#F4F2F2"
                 android:clipToPadding="false" />
 
             <!-- Empty State -->
@@ -101,7 +102,7 @@
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:alpha="0.5"
-                    android:src="@drawable/app_logo" />
+                    android:src="@drawable/applogoland" />
 
                 <!-- Empty State Message -->
                 <TextView

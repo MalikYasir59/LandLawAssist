@@ -20,7 +20,7 @@
     <color name="status_closed">#F44336</color>
     <color name="status_default">#757575</color>
 
-    <color name="rating_bar_tint">@color/primary</color>
+    <color name="rating_bar_tint">#00796B</color>
 
     <!-- Add this color -->
     <color name="reply_background">#F5F5F5</color>
