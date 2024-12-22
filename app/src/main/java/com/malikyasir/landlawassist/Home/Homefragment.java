@@ -28,6 +28,8 @@ public class Homefragment extends Fragment {
     private FirebaseFirestore db;
     private ProgressBar profileProgress;
     private View profileCompletionCard;
+    private TextView profileStatusText;
+    private TextView profileStatusDescription;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class Homefragment extends Fragment {
         notificationBadge = view.findViewById(R.id.notificationBadge);
         profileProgress = view.findViewById(R.id.profileProgress);
         profileCompletionCard = view.findViewById(R.id.profileCompletionCard);
+        profileStatusText = view.findViewById(R.id.profileStatusText);
+        profileStatusDescription = view.findViewById(R.id.profileStatusDescription);
 
         // Initialize Firebase and load data
         mAuth = FirebaseAuth.getInstance();
@@ -53,78 +57,75 @@ public class Homefragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             db.collection("users").document(user.getUid())
-                    .get()
-                    .addOnSuccessListener(document -> {
-                        if (document.exists()) {
-                            String fullName = document.getString("fullName");
-                            String imageUrl = document.getString("profileImage");
+                .get()
+                .addOnSuccessListener(document -> {
+                    if (document.exists()) {
+                        String fullName = document.getString("fullName");
+                        String imageUrl = document.getString("profileImage");
 
-                            userNameText.setText(fullName);
+                        userNameText.setText(fullName);
 
-                            if (imageUrl != null) {
-                                Glide.with(this)
-                                        .load(imageUrl)
-                                        .placeholder(R.drawable.profileuser)
-                                        .into(profileImage);
-                            }
+                        if (imageUrl != null) {
+                            Glide.with(this)
+                                .load(imageUrl)
+                                .placeholder(R.drawable.profileuser)
+                                .into(profileImage);
                         }
-                    });
+                    }
+                });
         }
     }
 
     private void loadUserProfile() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(userId)
-                .get()
-                .addOnSuccessListener(document -> {
-                    if (document.exists()) {
-                        String streetAddress = document.getString("streetAddress");
-                        String country = document.getString("country");
-
-                        // Calculate progress
-                        int progress;
-
-                        // Check if address is complete
-                        boolean isAddressComplete = streetAddress != null && !streetAddress.isEmpty()
-                                && country != null && !country.isEmpty();
-
-                        if (isAddressComplete) {
-                            progress = 100;
-                            // Update Firestore with 100% completion
-                            document.getReference().update("profileCompletion", 100)
-                                    .addOnSuccessListener(aVoid -> {
-                                        // Hide the card when update is successful
-                                        profileCompletionCard.animate()
-                                                .alpha(0f)
-                                                .setStartDelay(1500)
-                                                .setDuration(500)
-                                                .withEndAction(() -> profileCompletionCard.setVisibility(View.GONE))
-                                                .start();
-                                    });
-                        } else {
-                            progress = 50;
-                            // Update Firestore with 50% completion
-                            document.getReference().update("profileCompletion", 50);
-                            profileCompletionCard.setVisibility(View.VISIBLE);
-                            profileCompletionCard.setAlpha(1f);
-                        }
-
-                        // Animate progress bar
-                        ObjectAnimator animation = ObjectAnimator.ofInt(
-                                profileProgress,
-                                "progress",
-                                0,
-                                progress
-                        );
-                        animation.setDuration(1000);
-                        animation.setInterpolator(new DecelerateInterpolator());
-                        animation.start();
+            .collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener(document -> {
+                if (document.exists()) {
+                    String streetAddress = document.getString("streetAddress");
+                    String country = document.getString("country");
+                    
+                    // Calculate progress
+                    int progress;
+                    
+                    // Check if address is complete
+                    boolean isAddressComplete = streetAddress != null && !streetAddress.isEmpty() 
+                        && country != null && !country.isEmpty();
+                    
+                    if (isAddressComplete) {
+                        progress = 100;
+                        // Update Firestore with 100% completion
+                        document.getReference().update("profileCompletion", 100)
+                            .addOnSuccessListener(aVoid -> {
+                                // Update text instead of hiding
+                                profileStatusText.setText("Profile Completed");
+                                profileStatusDescription.setText("Your profile is now complete and ready to use");
+                            });
+                    } else {
+                        progress = 50;
+                        // Update Firestore with 50% completion
+                        document.getReference().update("profileCompletion", 50);
+                        // Set default text
+                        profileStatusText.setText("Complete your profile");
+                        profileStatusDescription.setText("Completing your profile will make easier for you find the best lawyers");
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Error loading profile", Toast.LENGTH_SHORT).show();
-                });
+
+                    // Animate progress bar
+                    ObjectAnimator animation = ObjectAnimator.ofInt(
+                        profileProgress, 
+                        "progress",
+                        0,
+                        progress
+                    );
+                    animation.setDuration(1000);
+                    animation.setInterpolator(new DecelerateInterpolator());
+                    animation.start();
+                }
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(getContext(), "Error loading profile", Toast.LENGTH_SHORT).show();
+            });
     }
 }
