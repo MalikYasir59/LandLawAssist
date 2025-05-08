@@ -207,7 +207,7 @@
 
             <!-- View My Cases Button -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/viewCasesCard"
+                android:id="@+id/myLawyersCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -225,13 +225,13 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_case"
+                        android:src="@drawable/ic_lawyer"
                         app:tint="@color/background"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View My Cases"
+                        android:text="My Lawyers"
                         android:textStyle="bold"
                         android:layout_marginTop="8dp"
                         android:textColor="@color/background"/>
@@ -320,6 +320,12 @@
 
     </LinearLayout>
 
-
+    <!-- My Lawyers Horizontal List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/myLawyersRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="visible"/>
 
 </LinearLayout>

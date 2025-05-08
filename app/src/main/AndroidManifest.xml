@@ -118,10 +118,6 @@
         </activity>
 
         <activity
-            android:name=".Home.LawyerDashboardFragment"
-            android:exported="true" />
-
-        <activity
             android:name=".Activity.FindLawyersActivity"
             android:exported="true"
             android:parentActivityName=".Home.MainActivity">
@@ -129,6 +125,21 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Home.MainActivity" />
         </activity>
+
+        <activity
+            android:name=".Activity.ChatActivity"
+            android:exported="true"
+            android:parentActivityName=".Home.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home.MainActivity" />
+        </activity>
+
+       
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home.MainActivity" />
+
     </application>
 
 </manifest>

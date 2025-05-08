@@ -28,6 +28,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 import com.malikyasir.landlawassist.Adapters.ClientAdapter;
+import com.google.firebase.auth.FirebaseUser;
 
 public class
 CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
@@ -300,7 +301,18 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
     }
 
     private void loadAcceptedClientsForCaseManagement() {
-        String lawyerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // Handle not logged in case
+            if (noClientsText != null) {
+                noClientsText.setVisibility(View.VISIBLE);
+                noClientsText.setText("Please log in to view your clients");
+            }
+            if (clientsRecyclerView != null) clientsRecyclerView.setVisibility(View.GONE);
+            return;
+        }
+        
+        String lawyerId = currentUser.getUid();
         db.collection("lawyerRequests")
             .whereEqualTo("lawyerId", lawyerId)
             .whereEqualTo("status", "ACCEPTED")

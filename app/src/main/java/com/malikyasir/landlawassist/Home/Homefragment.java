@@ -23,7 +23,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.malikyasir.landlawassist.Adapters.LawyerAdapter;
+import com.malikyasir.landlawassist.Adapter.LawyerAdapter;
 import com.malikyasir.landlawassist.Adapters.ClientAdapter;
 import com.malikyasir.landlawassist.Models.Lawyer;
 import com.malikyasir.landlawassist.Modelss.LawyerRequest;
@@ -69,6 +69,9 @@ public class Homefragment extends Fragment {
     private List<String> cityList = new ArrayList<>();
     private LawyerAdapter lawyerAdapter;
     private List<User> featuredLawyers = new ArrayList<>();
+    private RecyclerView myLawyersRecyclerView;
+    private List<User> myLawyers = new ArrayList<>();
+    private LawyerAdapter myLawyersAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,6 +92,7 @@ public class Homefragment extends Fragment {
         messagesCard = view.findViewById(R.id.messagesCard);
         featuredLawyersSection = view.findViewById(R.id.featuredLawyersSection);
         cityListView = view.findViewById(R.id.cityListView);
+        myLawyersRecyclerView = view.findViewById(R.id.myLawyersRecyclerView);
 
         // Initialize Firebase and load data
         mAuth = FirebaseAuth.getInstance();
@@ -123,10 +127,9 @@ public class Homefragment extends Fragment {
         }
 
         // Setup Quick Actions
-        view.findViewById(R.id.viewCasesCard).setOnClickListener(v -> {
-            // Navigate to Case Management section
-            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
-            bottomNav.setSelectedItemId(R.id.nav_case_management);
+        view.findViewById(R.id.myLawyersCard).setOnClickListener(v -> {
+            // Show accepted lawyers for the client
+            showAcceptedLawyersDialog();
         });
 
         // Fetch unique cities from Firestore
@@ -163,6 +166,23 @@ public class Homefragment extends Fragment {
 
         setupCityFilter();
         loadAllLawyers();
+
+        myLawyersAdapter = new LawyerAdapter(getContext(), myLawyers);
+        myLawyersRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        myLawyersRecyclerView.setAdapter(myLawyersAdapter);
+        loadAcceptedLawyersForClient();
+
+        if (messagesCard != null) {
+            messagesCard.setOnClickListener(v -> {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser == null) {
+                    Toast.makeText(getContext(), "Please log in to view messages", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                // Rest of your click listener logic
+                // ...
+            });
+        }
 
         return view;
     }
@@ -204,7 +224,15 @@ public class Homefragment extends Fragment {
     }
 
     private void loadUserProfile() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // Handle not logged in case
+            if (profileStatusText != null) profileStatusText.setText("Please log in");
+            if (profileStatusDescription != null) profileStatusDescription.setText("You need to log in to view your profile");
+            return;
+        }
+        
+        String userId = currentUser.getUid();
         FirebaseFirestore.getInstance()
             .collection("users")
             .document(userId)
@@ -284,7 +312,7 @@ public class Homefragment extends Fragment {
         lawyers.add(sohail);
 
         // Initialize the field, not a local variable
-        lawyerAdapter = new LawyerAdapter(lawyers);
+        lawyerAdapter = new LawyerAdapter(getContext(), lawyers);
         lawyerViewPager.setAdapter(lawyerAdapter);
 
         // Set orientation to horizontal
@@ -307,7 +335,17 @@ public class Homefragment extends Fragment {
     }
 
     private void loadAcceptedClients() {
-        String lawyerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // Handle not logged in case
+            if (noClientsText != null) {
+                noClientsText.setVisibility(View.VISIBLE);
+                noClientsText.setText("Please log in to view your clients");
+            }
+            return;
+        }
+        
+        String lawyerId = currentUser.getUid();
         db.collection("lawyerRequests")
             .whereEqualTo("lawyerId", lawyerId)
             .whereEqualTo("status", "ACCEPTED")
@@ -336,6 +374,7 @@ public class Homefragment extends Fragment {
                             .addOnSuccessListener(userDoc -> {
                                 User user = userDoc.toObject(User.class);
                                 if (user != null) {
+                                    user.setId(userDoc.getId());
                                     clientUsers.add(user);
                                     // Debugging log
                                     Log.d("LawyerDashboard", "Loaded client: " + user.getFullName());
@@ -384,9 +423,14 @@ public class Homefragment extends Fragment {
                 featuredLawyers.clear();
                 for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                     User lawyer = doc.toObject(User.class);
-                    if (lawyer != null) featuredLawyers.add(lawyer);
+                    if (lawyer != null) {
+                        lawyer.setId(doc.getId());
+                        featuredLawyers.add(lawyer);
+                    }
                 }
-                lawyerAdapter.updateLawyers(featuredLawyers);
+                if (lawyerAdapter != null) {
+                    lawyerAdapter.updateLawyers(featuredLawyers);
+                }
             });
     }
 
@@ -399,9 +443,134 @@ public class Homefragment extends Fragment {
                 featuredLawyers.clear();
                 for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                     User lawyer = doc.toObject(User.class);
-                    if (lawyer != null) featuredLawyers.add(lawyer);
+                    if (lawyer != null) {
+                        lawyer.setId(doc.getId());
+                        featuredLawyers.add(lawyer);
+                    }
                 }
-                lawyerAdapter.updateLawyers(featuredLawyers);
+                if (lawyerAdapter != null) {
+                    lawyerAdapter.updateLawyers(featuredLawyers);
+                }
+            });
+    }
+
+    private void showAcceptedLawyersDialog() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "Please log in to view your lawyers", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        String userId = currentUser.getUid();
+        db.collection("lawyerRequests")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("status", "ACCEPTED")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                List<String> lawyerIds = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+                    String lawyerId = doc.getString("lawyerId");
+                    if (lawyerId != null) lawyerIds.add(lawyerId);
+                }
+                if (lawyerIds.isEmpty()) {
+                    Toast.makeText(getContext(), "No accepted lawyers yet", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Fetch lawyer profiles
+                    List<User> acceptedLawyers = new ArrayList<>();
+                    for (String lawyerId : lawyerIds) {
+                        db.collection("users").document(lawyerId)
+                            .get()
+                            .addOnSuccessListener(userDoc -> {
+                                User lawyer = userDoc.toObject(User.class);
+                                if (lawyer != null) {
+                                    lawyer.setId(userDoc.getId());
+                                    acceptedLawyers.add(lawyer);
+                                    if (acceptedLawyers.size() == lawyerIds.size()) {
+                                        showLawyersDialog(acceptedLawyers);
+                                    }
+                                }
+                            });
+                    }
+                }
+            });
+    }
+
+    private void showLawyersDialog(List<User> lawyers) {
+        if (getContext() == null) return;
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getContext());
+        builder.setTitle("My Lawyers");
+        String[] lawyerNames = new String[lawyers.size()];
+        for (int i = 0; i < lawyers.size(); i++) {
+            lawyerNames[i] = lawyers.get(i).getFullName() + " (" + lawyers.get(i).getSpecialization() + ")";
+        }
+        builder.setItems(lawyerNames, (dialog, which) -> {
+            // On lawyer click, open chat
+            User lawyer = lawyers.get(which);
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser == null) {
+                Toast.makeText(getContext(), "Please log in to chat with lawyers", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            String clientId = currentUser.getUid();
+            String lawyerId = lawyer.getId();
+            
+            if (lawyerId == null) {
+                Toast.makeText(getContext(), "Invalid lawyer information", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            
+            Log.d("HomeFragment", "Starting chat - clientId: " + clientId + ", lawyerId: " + lawyerId);
+            
+            Intent intent = new Intent(getContext(), com.malikyasir.landlawassist.Activity.ChatActivity.class);
+            intent.putExtra("userId", clientId);               // Client ID (current user)
+            intent.putExtra("lawyerId", lawyerId);             // Lawyer ID
+            intent.putExtra("lawyerName", lawyer.getFullName()); // Lawyer name
+            intent.putExtra("userName", "Client");             // We're the client
+            startActivity(intent);
+        });
+        builder.setNegativeButton("Close", null);
+        builder.show();
+    }
+
+    private void loadAcceptedLawyersForClient() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            // Handle not logged in case
+            myLawyers.clear();
+            myLawyersAdapter.notifyDataSetChanged();
+            return;
+        }
+        
+        String userId = currentUser.getUid();
+        db.collection("lawyerRequests")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("status", "ACCEPTED")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                List<String> lawyerIds = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+                    String lawyerId = doc.getString("lawyerId");
+                    if (lawyerId != null) lawyerIds.add(lawyerId);
+                }
+                if (lawyerIds.isEmpty()) {
+                    myLawyers.clear();
+                    myLawyersAdapter.notifyDataSetChanged();
+                } else {
+                    myLawyers.clear();
+                    for (String lawyerId : lawyerIds) {
+                        db.collection("users").document(lawyerId)
+                            .get()
+                            .addOnSuccessListener(userDoc -> {
+                                User lawyer = userDoc.toObject(User.class);
+                                if (lawyer != null) {
+                                    lawyer.setId(userDoc.getId());
+                                    myLawyers.add(lawyer);
+                                    myLawyersAdapter.notifyDataSetChanged();
+                                }
+                            });
+                    }
+                }
             });
     }
 

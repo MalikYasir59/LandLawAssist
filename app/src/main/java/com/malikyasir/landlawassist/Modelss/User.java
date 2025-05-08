@@ -125,4 +125,15 @@ public class User {
     public void setStreetAddress(String streetAddress) { this.streetAddress = streetAddress; }
     public void setCountry(String country) { this.country = country; }
     public void setProfileCompletion(int profileCompletion) { this.profileCompletion = profileCompletion; }
+    
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", userType='" + userType + '\'' +
+                ", lawyerId='" + lawyerId + '\'' +
+                '}';
+    }
 }
