@@ -38,6 +38,7 @@ import android.app.ProgressDialog;
 import androidx.appcompat.app.AppCompatDelegate;
 import android.widget.RadioGroup;
 import android.os.Handler;
+import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView userNameText, userEmailText;
     private Uri userImageUri;
     private static final int PICK_IMAGE_REQUEST = 1;
+    private String userType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -424,11 +426,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        // Get userType from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("app_settings", MODE_PRIVATE);
+        userType = prefs.getString("user_type", "User");
         bottomNavigationView.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
-
             if (item.getItemId() == R.id.nav_home) {
-                selectedFragment = new Homefragment();
+                if ("Lawyer".equalsIgnoreCase(userType)) {
+                    selectedFragment = new LawyerDashboardFragment();
+                } else {
+                    selectedFragment = new Homefragment();
+                }
                 getSupportActionBar().setTitle("");
                 enableDrawer(true);
             } else if (item.getItemId() == R.id.nav_legal_resources) {
@@ -444,13 +452,11 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("AI Assistant");
                 enableDrawer(false);
             }
-
             if (selectedFragment != null) {
                 loadFragment(selectedFragment);
             }
             return true;
         });
-
         // Set default fragment (Home)
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
     }

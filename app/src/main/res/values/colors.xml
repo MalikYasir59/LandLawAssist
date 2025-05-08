@@ -53,6 +53,11 @@
     <color name="selector_bottom_nav2">#18FF07</color>
     <color name="topgradient">#006064</color>
     <color name="light_gray">#EEEEEE</color>
+
+    <!-- Status colors -->
+    <color name="pending_color">#FFA000</color> <!-- Amber -->
+    <color name="accepted_color">#4CAF50</color> <!-- Green -->
+    <color name="rejected_color">#F44336</color> <!-- Red -->
 </resources>
 
 

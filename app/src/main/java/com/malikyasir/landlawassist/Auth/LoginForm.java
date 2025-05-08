@@ -14,8 +14,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.malikyasir.landlawassist.Home.MainActivity;
 import com.malikyasir.landlawassist.R;
+import com.malikyasir.landlawassist.Modelss.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginForm extends AppCompatActivity {
 
@@ -70,8 +77,19 @@ public class LoginForm extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     progressBar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
-                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        navigateToMainActivity();
+                        String userId = mAuth.getCurrentUser().getUid();
+                        FirebaseFirestore.getInstance().collection("users").document(userId)
+                            .get()
+                            .addOnSuccessListener(document -> {
+                                if (document.exists()) {
+                                    String userType = document.getString("userType");
+                                    // Store userType in SharedPreferences
+                                    getSharedPreferences("app_settings", MODE_PRIVATE)
+                                        .edit().putString("user_type", userType).apply();
+                                    startActivity(new Intent(this, MainActivity.class));
+                                    finish();
+                                }
+                            });
                     } else {
                         Toast.makeText(this, "Login failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }

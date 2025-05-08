@@ -238,10 +238,58 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
+
+        <!-- Lawyer Messages Button (for lawyers only) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/messagesCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="2dp"
+            android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/app_logo"
+                    app:tint="@color/background" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Messages"
+                    android:textColor="@color/background"
+                    android:textStyle="bold"
+                    android:layout_marginStart="12dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Lawyer Clients List (for lawyers only) -->
+        <TextView
+            android:id="@+id/noClientsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No client"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/clientsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <!-- Featured Lawyers Section -->
     <LinearLayout
+        android:id="@+id/featuredLawyersSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -256,12 +304,19 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <!-- City Filter Dropdown -->
+       <ListView
+    android:id="@+id/cityListView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:visibility="visible" />
+
         <!-- Update ViewPager2 -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/lawyerViewPager"
             android:layout_width="match_parent"
             android:layout_height="317dp" />
-
 
     </LinearLayout>
 

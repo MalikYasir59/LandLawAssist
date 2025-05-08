@@ -21,14 +21,31 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.malikyasir.landlawassist.Adapters.LawyerAdapter;
+import com.malikyasir.landlawassist.Adapters.ClientAdapter;
 import com.malikyasir.landlawassist.Models.Lawyer;
+import com.malikyasir.landlawassist.Modelss.LawyerRequest;
+import com.malikyasir.landlawassist.Modelss.User;
 import com.malikyasir.landlawassist.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import android.content.SharedPreferences;
+import androidx.recyclerview.widget.RecyclerView;
+import android.widget.AutoCompleteTextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.content.Intent;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 public class Homefragment extends Fragment {
     private TextView userNameText;
@@ -41,7 +58,17 @@ public class Homefragment extends Fragment {
     private TextView profileStatusText;
     private TextView profileStatusDescription;
     private ViewPager2 lawyerViewPager;
-    private List<Lawyer> lawyers;
+    private List<User> lawyers;
+    private RecyclerView clientsRecyclerView;
+    private TextView noClientsText;
+    private View findLawyersCard, messagesCard, featuredLawyersSection;
+    private String userType;
+    private ClientAdapter clientAdapter;
+    private List<User> clientUsers = new ArrayList<>();
+    private ListView cityListView;
+    private List<String> cityList = new ArrayList<>();
+    private LawyerAdapter lawyerAdapter;
+    private List<User> featuredLawyers = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,33 +83,93 @@ public class Homefragment extends Fragment {
         profileStatusText = view.findViewById(R.id.profileStatusText);
         profileStatusDescription = view.findViewById(R.id.profileStatusDescription);
         lawyerViewPager = view.findViewById(R.id.lawyerViewPager);
+        clientsRecyclerView = view.findViewById(R.id.clientsRecyclerView);
+        noClientsText = view.findViewById(R.id.noClientsText);
+        findLawyersCard = view.findViewById(R.id.findLawyersCard);
+        messagesCard = view.findViewById(R.id.messagesCard);
+        featuredLawyersSection = view.findViewById(R.id.featuredLawyersSection);
+        cityListView = view.findViewById(R.id.cityListView);
 
         // Initialize Firebase and load data
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         loadUserData();
         loadUserProfile();
-        setupLawyerSlider();
+
+        // Get userType from SharedPreferences
+        SharedPreferences prefs = requireActivity().getSharedPreferences("app_settings", Context.MODE_PRIVATE);
+        userType = prefs.getString("user_type", "User");
+
+        if ("Lawyer".equalsIgnoreCase(userType)) {
+            // Hide featured lawyers and find lawyers, show messages
+            if (featuredLawyersSection != null) featuredLawyersSection.setVisibility(View.GONE);
+            if (findLawyersCard != null) findLawyersCard.setVisibility(View.GONE);
+            if (messagesCard != null) messagesCard.setVisibility(View.VISIBLE);
+            // Show accepted clients
+            clientAdapter = new ClientAdapter(getContext(), clientUsers, client -> {
+                // TODO: Navigate to client details/cases
+                Toast.makeText(getContext(), "Clicked: " + client.getFullName(), Toast.LENGTH_SHORT).show();
+            });
+            clientsRecyclerView.setAdapter(clientAdapter);
+            loadAcceptedClients();
+        } else {
+            // User: show featured lawyers, hide clients
+            if (featuredLawyersSection != null) featuredLawyersSection.setVisibility(View.VISIBLE);
+            if (findLawyersCard != null) findLawyersCard.setVisibility(View.VISIBLE);
+            if (messagesCard != null) messagesCard.setVisibility(View.GONE);
+            if (clientsRecyclerView != null) clientsRecyclerView.setVisibility(View.GONE);
+            if (noClientsText != null) noClientsText.setVisibility(View.GONE);
+            setupLawyerSlider();
+        }
 
         // Setup Quick Actions
-        view.findViewById(R.id.findLawyersCard).setOnClickListener(v -> {
-            // Navigate to Find Lawyers section
-            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
-            bottomNav.setSelectedItemId(R.id.nav_legal_resources);
-        });
-
         view.findViewById(R.id.viewCasesCard).setOnClickListener(v -> {
             // Navigate to Case Management section
             BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottom_navigation);
             bottomNav.setSelectedItemId(R.id.nav_case_management);
         });
 
+        // Fetch unique cities from Firestore
+        FirebaseFirestore.getInstance().collection("users")
+            .whereEqualTo("userType", "Lawyer")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                Set<String> uniqueCities = new HashSet<>();
+                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                    String city = doc.getString("city");
+                    if (city != null && !city.isEmpty()) uniqueCities.add(city);
+                }
+                cityList.clear();
+                cityList.add("All Cities");
+                cityList.addAll(uniqueCities);
+                ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, cityList);
+                cityListView.setAdapter(cityAdapter);
+            });
+
+        cityListView.setOnItemClickListener((parent, v, position, id) -> {
+            String selectedCity = cityList.get(position);
+            if (selectedCity.equals("All Cities")) {
+                loadAllLawyers();
+            } else {
+                loadLawyersByCity(selectedCity);
+            }
+        });
+
+        // Add a button to navigate to FindLawyersActivity
+        view.findViewById(R.id.findLawyersCard).setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), com.malikyasir.landlawassist.Activity.FindLawyersActivity.class);
+            startActivity(intent);
+        });
+
+        setupCityFilter();
+        loadAllLawyers();
+
         return view;
     }
 
     private void loadUserData() {
         if (!isAdded()) return;
-        
+
         Context context = getContext();
         if (context == null) return;
 
@@ -92,7 +179,7 @@ public class Homefragment extends Fragment {
                 .get()
                 .addOnSuccessListener(document -> {
                     if (!isAdded() || context == null) return;
-                    
+
                     if (document.exists()) {
                         String imageUrl = document.getString("profileImage");
                         if (imageUrl != null && !imageUrl.isEmpty() && profileImage != null) {
@@ -106,7 +193,7 @@ public class Homefragment extends Fragment {
                                 Log.e("HomeFragment", "Error loading image", e);
                             }
                         }
-                        
+
                         if (userNameText != null) {
                             String fullName = document.getString("fullName");
                             userNameText.setText(fullName);
@@ -126,14 +213,14 @@ public class Homefragment extends Fragment {
                 if (document.exists()) {
                     String streetAddress = document.getString("streetAddress");
                     String country = document.getString("country");
-                    
+
                     // Calculate progress
                     int progress;
-                    
+
                     // Check if address is complete
-                    boolean isAddressComplete = streetAddress != null && !streetAddress.isEmpty() 
+                    boolean isAddressComplete = streetAddress != null && !streetAddress.isEmpty()
                         && country != null && !country.isEmpty();
-                    
+
                     if (isAddressComplete) {
                         progress = 100;
                         // Update Firestore with 100% completion
@@ -154,7 +241,7 @@ public class Homefragment extends Fragment {
 
                     // Animate progress bar
                     ObjectAnimator animation = ObjectAnimator.ofInt(
-                        profileProgress, 
+                        profileProgress,
                         "progress",
                         0,
                         progress
@@ -171,45 +258,45 @@ public class Homefragment extends Fragment {
 
     private void setupLawyerSlider() {
         lawyers = new ArrayList<>();
-        
-        // Add sample lawyers
-        lawyers.add(new Lawyer(
-            "Adv. Yasir Ramzan",
-            "Property Law Specialist",
-            4.5f,
-            "15 years experience",
-            ""
-        ));
-        
-        lawyers.add(new Lawyer(
-            "Adv. Butt Sahab",
-            "Real Estate Law Expert",
-            4.8f,
-            "20 years experience",
-            ""
-        ));
+        // Add sample lawyers as User objects
+        User yasir = new User();
+        yasir.setFullName("Adv. Yasir Ramzan");
+        yasir.setSpecialization("Property Law Specialist");
+        yasir.setRating(4.5);
+        yasir.setExperience("15 years experience");
+        yasir.setProfileImage(""); // Set image URL or leave blank
+        lawyers.add(yasir);
 
-        lawyers.add(new Lawyer(
-            "Adv. Sohail Ahmed",
-            "Land Law Expert",
-            4.7f,
-            "18 years experience",
-            ""
-        ));
+        User butt = new User();
+        butt.setFullName("Adv. Butt Sahab");
+        butt.setSpecialization("Real Estate Law Expert");
+        butt.setRating(4.8);
+        butt.setExperience("20 years experience");
+        butt.setProfileImage("");
+        lawyers.add(butt);
 
-        LawyerAdapter adapter = new LawyerAdapter(lawyers);
-        lawyerViewPager.setAdapter(adapter);
-        
+        User sohail = new User();
+        sohail.setFullName("Adv. Sohail Ahmed");
+        sohail.setSpecialization("Land Law Expert");
+        sohail.setRating(4.7);
+        sohail.setExperience("18 years experience");
+        sohail.setProfileImage("");
+        lawyers.add(sohail);
+
+        // Initialize the field, not a local variable
+        lawyerAdapter = new LawyerAdapter(lawyers);
+        lawyerViewPager.setAdapter(lawyerAdapter);
+
         // Set orientation to horizontal
         lawyerViewPager.setOrientation(ViewPager2.ORIENTATION_HORIZONTAL);
-        
+
         // Add padding for showing part of next/previous cards
         int padding = getResources().getDimensionPixelOffset(R.dimen.viewpager_padding);
         lawyerViewPager.setPadding(padding, 0, padding, 0);
         lawyerViewPager.setClipToPadding(false);
         lawyerViewPager.setClipChildren(false);
         lawyerViewPager.getChildAt(0).setOverScrollMode(View.OVER_SCROLL_NEVER);
-        
+
         // Set page transformer
         CompositePageTransformer transformer = new CompositePageTransformer();
         transformer.addTransformer((page, position) -> {
@@ -217,6 +304,105 @@ public class Homefragment extends Fragment {
             page.setScaleY(0.85f + r * 0.15f);
         });
         lawyerViewPager.setPageTransformer(transformer);
+    }
+
+    private void loadAcceptedClients() {
+        String lawyerId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        db.collection("lawyerRequests")
+            .whereEqualTo("lawyerId", lawyerId)
+            .whereEqualTo("status", "ACCEPTED")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                List<String> clientIds = new ArrayList<>();
+                for (QueryDocumentSnapshot doc : querySnapshot) {
+                    String clientId = doc.getString("userId");
+                    if (clientId != null) clientIds.add(clientId);
+                }
+
+                // Debugging log
+                Log.d("LawyerDashboard", "Found clients: " + clientIds.size());
+
+                if (clientIds.isEmpty()) {
+                    if (noClientsText != null) noClientsText.setVisibility(View.VISIBLE);
+                    clientUsers.clear();
+                    if (clientAdapter != null) clientAdapter.updateClients(clientUsers);
+                } else {
+                    if (noClientsText != null) noClientsText.setVisibility(View.GONE);
+                    // Fetch user info for each client
+                    clientUsers.clear();
+                    for (String clientId : clientIds) {
+                        db.collection("users").document(clientId)
+                            .get()
+                            .addOnSuccessListener(userDoc -> {
+                                User user = userDoc.toObject(User.class);
+                                if (user != null) {
+                                    clientUsers.add(user);
+                                    // Debugging log
+                                    Log.d("LawyerDashboard", "Loaded client: " + user.getFullName());
+                                    if (clientAdapter != null) clientAdapter.updateClients(clientUsers);
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("LawyerDashboard", "Error loading client: " + e.getMessage());
+                            });
+                    }
+                }
+            })
+            .addOnFailureListener(e -> {
+                Log.e("LawyerDashboard", "Error fetching requests: " + e.getMessage());
+            });
+    }
+
+    private void setupCityFilter() {
+        // Commenting out the city filter logic for now
+        /*
+        cityList.clear();
+        cityList.add("All Cities");
+        cityList.add("Lahore");
+        cityList.add("Karachi");
+        cityList.add("Islamabad");
+        cityList.add("Multan");
+        cityList.add("Peshawar");
+        ArrayAdapter<String> cityAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, cityList);
+        cityListView.setAdapter(cityAdapter);
+        cityListView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedCity = cityList.get(position);
+            if (selectedCity.equals("All Cities")) {
+                loadAllLawyers();
+            } else {
+                loadLawyersByCity(selectedCity);
+            }
+        });
+        */
+    }
+
+    private void loadAllLawyers() {
+        FirebaseFirestore.getInstance().collection("users")
+            .whereEqualTo("userType", "Lawyer")
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                featuredLawyers.clear();
+                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                    User lawyer = doc.toObject(User.class);
+                    if (lawyer != null) featuredLawyers.add(lawyer);
+                }
+                lawyerAdapter.updateLawyers(featuredLawyers);
+            });
+    }
+
+    private void loadLawyersByCity(String city) {
+        FirebaseFirestore.getInstance().collection("users")
+            .whereEqualTo("userType", "Lawyer")
+            .whereEqualTo("city", city)
+            .get()
+            .addOnSuccessListener(querySnapshot -> {
+                featuredLawyers.clear();
+                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                    User lawyer = doc.toObject(User.class);
+                    if (lawyer != null) featuredLawyers.add(lawyer);
+                }
+                lawyerAdapter.updateLawyers(featuredLawyers);
+            });
     }
 
     @Override
@@ -233,7 +419,7 @@ public class Homefragment extends Fragment {
 
     private void clearGlideResources() {
         if (profileImage == null || !isAdded()) return;
-        
+
         try {
             // Get context safely
             Context context = getContext();
