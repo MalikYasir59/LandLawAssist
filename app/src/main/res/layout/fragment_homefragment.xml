@@ -225,7 +225,7 @@
                     <ImageView
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:src="@drawable/ic_lawyer"
+                        android:src="@drawable/ic_lawyerone"
                         app:tint="@color/background"/>
 
                     <TextView

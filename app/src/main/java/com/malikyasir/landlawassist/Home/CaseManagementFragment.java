@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.WriteBatch;
+import com.malikyasir.landlawassist.Activity.ClientCasesActivity;
 import com.malikyasir.landlawassist.Adapters.CaseAdapter;
 import com.malikyasir.landlawassist.R;
 import com.malikyasir.landlawassist.usersidework.addcases;
@@ -29,9 +30,11 @@ import java.util.ArrayList;
 import java.util.List;
 import com.malikyasir.landlawassist.Adapters.ClientAdapter;
 import com.google.firebase.auth.FirebaseUser;
+import android.util.Log;
 
 public class
 CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
+    private static final String TAG = "CaseManagementFragment";
     private RecyclerView casesRecyclerView;
     private LinearLayout emptyStateLayout;
     private View progressBar;
@@ -47,6 +50,8 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
     private ClientAdapter clientAdapter;
     private List<User> clientUsers = new ArrayList<>();
     private String selectedClientId = null;
+    private TextView clientSectionTitle;
+    private View casesContainer;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,14 +66,16 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
         emptyStateLayout = view.findViewById(R.id.emptyStateLayout);
         progressBar = view.findViewById(R.id.progressBar);
         FloatingActionButton addCaseFab = view.findViewById(R.id.addCaseFab);
-        addCaseFab.setVisibility(View.VISIBLE);
-        addCaseFab.bringToFront();
+        clientsRecyclerView = view.findViewById(R.id.clientsRecyclerView);
+        noClientsText = view.findViewById(R.id.noClientsText);
+        clientSectionTitle = view.findViewById(R.id.clientSectionTitle);
+        casesContainer = view.findViewById(R.id.casesContainer);
 
         // Initialize ChipGroup
         statusChipGroup = view.findViewById(R.id.statusChipGroup);
         setupStatusChips();
 
-        // Setup RecyclerView
+        // Setup Cases RecyclerView
         casesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         caseAdapter = new CaseAdapter(new ArrayList<>(), new CaseAdapter.OnCaseClickListener() {
             @Override
@@ -86,20 +93,13 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
         // Get userType from SharedPreferences
         SharedPreferences prefs = requireActivity().getSharedPreferences("app_settings", getContext().MODE_PRIVATE);
         userType = prefs.getString("user_type", "User");
+        
         if ("Lawyer".equalsIgnoreCase(userType)) {
-            // Show accepted clients
-            clientAdapter = new ClientAdapter(getContext(), clientUsers, client -> {
-                selectedClientId = client.getId();
-                loadClientCases(selectedClientId);
-            });
-            if (clientsRecyclerView != null) clientsRecyclerView.setAdapter(clientAdapter);
-            loadAcceptedClientsForCaseManagement();
+            // Setup for lawyer: Show list of clients first
+            setupForLawyer(view);
         } else {
-            // User: show cases as before
-            casesRecyclerView.setVisibility(View.VISIBLE);
-            if (clientsRecyclerView != null) clientsRecyclerView.setVisibility(View.GONE);
-            if (noClientsText != null) noClientsText.setVisibility(View.GONE);
-            checkUserRoleAndLoadCases();
+            // Setup for client: Show their cases directly
+            setupForClient();
         }
 
         addCaseFab.setOnClickListener(v -> {
@@ -109,6 +109,46 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
         });
 
         return view;
+    }
+
+    private void setupForLawyer(View view) {
+        Log.d(TAG, "Setting up view for lawyer");
+        
+        // Show clients section
+        if (clientSectionTitle != null) clientSectionTitle.setVisibility(View.VISIBLE);
+        if (clientsRecyclerView != null) clientsRecyclerView.setVisibility(View.VISIBLE);
+        
+        // Hide cases initially until a client is selected
+        if (casesContainer != null) casesContainer.setVisibility(View.GONE);
+        
+        // Setup clients RecyclerView
+        clientsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        clientAdapter = new ClientAdapter(getContext(), clientUsers, client -> {
+            // When a client is clicked, navigate to ClientCasesActivity
+            Intent intent = new Intent(getContext(), ClientCasesActivity.class);
+            intent.putExtra("clientId", client.getId());
+            intent.putExtra("clientName", client.getFullName());
+            startActivity(intent);
+        });
+        clientsRecyclerView.setAdapter(clientAdapter);
+        
+        // Load clients
+        loadAcceptedClientsForCaseManagement();
+    }
+
+    private void setupForClient() {
+        Log.d(TAG, "Setting up view for client");
+        
+        // Hide clients section
+        if (clientSectionTitle != null) clientSectionTitle.setVisibility(View.GONE);
+        if (clientsRecyclerView != null) clientsRecyclerView.setVisibility(View.GONE);
+        if (noClientsText != null) noClientsText.setVisibility(View.GONE);
+        
+        // Show cases
+        if (casesContainer != null) casesContainer.setVisibility(View.VISIBLE);
+        
+        // Load client's cases
+        checkUserRoleAndLoadCases();
     }
 
     private void setupStatusChips() {
@@ -125,7 +165,13 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
             } else if (checkedId == R.id.chipClosed) {
                 currentStatus = "CLOSED";
             }
-            checkUserRoleAndLoadCases();
+            
+            // If a client is selected (lawyer view) or we're a client
+            if (selectedClientId != null) {
+                loadClientCases(selectedClientId);
+            } else {
+                checkUserRoleAndLoadCases();
+            }
         });
 
         // Set default selection
@@ -135,7 +181,11 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
     @Override
     public void onCaseAdded() {
         // Refresh the cases list when a new case is added
-        checkUserRoleAndLoadCases();
+        if (selectedClientId != null) {
+            loadClientCases(selectedClientId);
+        } else {
+            checkUserRoleAndLoadCases();
+        }
     }
 
     private void checkUserRoleAndLoadCases() {
@@ -283,7 +333,11 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
                     .addOnSuccessListener(aVoid -> {
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Case deleted successfully", Toast.LENGTH_SHORT).show();
-                        checkUserRoleAndLoadCases(); // Reload cases
+                        if (selectedClientId != null) {
+                            loadClientCases(selectedClientId);
+                        } else {
+                            checkUserRoleAndLoadCases();
+                        }
                     })
                     .addOnFailureListener(e -> {
                         progressBar.setVisibility(View.GONE);
@@ -313,6 +367,8 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
         }
         
         String lawyerId = currentUser.getUid();
+        progressBar.setVisibility(View.VISIBLE);
+        
         db.collection("lawyerRequests")
             .whereEqualTo("lawyerId", lawyerId)
             .whereEqualTo("status", "ACCEPTED")
@@ -323,35 +379,74 @@ CaseManagementFragment extends Fragment implements addcases.CaseAddedListener {
                     String clientId = doc.getString("userId");
                     if (clientId != null) clientIds.add(clientId);
                 }
+                
+                Log.d(TAG, "Found " + clientIds.size() + " accepted clients");
+                
                 if (clientIds.isEmpty()) {
                     if (noClientsText != null) noClientsText.setVisibility(View.VISIBLE);
                     if (clientsRecyclerView != null) clientsRecyclerView.setVisibility(View.GONE);
                     clientUsers.clear();
                     if (clientAdapter != null) clientAdapter.updateClients(clientUsers);
+                    progressBar.setVisibility(View.GONE);
                 } else {
                     if (noClientsText != null) noClientsText.setVisibility(View.GONE);
                     if (clientsRecyclerView != null) clientsRecyclerView.setVisibility(View.VISIBLE);
+                    
                     // Fetch user info for each client
                     clientUsers.clear();
+                    final int[] clientsLoaded = {0};  // Counter to track when all clients are loaded
+                    
                     for (String clientId : clientIds) {
                         db.collection("users").document(clientId)
                             .get()
                             .addOnSuccessListener(userDoc -> {
+                                clientsLoaded[0]++;
                                 User user = userDoc.toObject(User.class);
                                 if (user != null) {
+                                    user.setId(userDoc.getId());
                                     clientUsers.add(user);
+                                    Log.d(TAG, "Loaded client: " + user.getFullName());
+                                }
+                                
+                                // Update adapter when all clients are loaded
+                                if (clientsLoaded[0] == clientIds.size()) {
                                     if (clientAdapter != null) clientAdapter.updateClients(clientUsers);
+                                    progressBar.setVisibility(View.GONE);
+                                }
+                            })
+                            .addOnFailureListener(e -> {
+                                clientsLoaded[0]++;
+                                Log.e(TAG, "Error loading client: " + e.getMessage());
+                                
+                                // Update adapter when all clients are loaded (even with failures)
+                                if (clientsLoaded[0] == clientIds.size()) {
+                                    if (clientAdapter != null) clientAdapter.updateClients(clientUsers);
+                                    progressBar.setVisibility(View.GONE);
                                 }
                             });
                     }
                 }
+            })
+            .addOnFailureListener(e -> {
+                progressBar.setVisibility(View.GONE);
+                Log.e(TAG, "Error fetching client requests: " + e.getMessage());
+                Toast.makeText(getContext(), "Error loading clients: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             });
     }
 
     private void loadClientCases(String clientId) {
-        // Only show cases for the selected client
+        if (clientId == null) {
+            Toast.makeText(getContext(), "No client selected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Show progress
+        progressBar.setVisibility(View.VISIBLE);
+        
+        // Only show cases for the selected client with the current status filter
         db.collection("cases")
             .whereEqualTo("userId", clientId)
+            .whereEqualTo("status", currentStatus)
             .get()
             .addOnSuccessListener(querySnapshot -> {
                 progressBar.setVisibility(View.GONE);

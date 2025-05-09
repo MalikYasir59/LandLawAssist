@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
         // In onCreate() after initializing navigationView
         View headerView = navigationView.getHeaderView(0);
         userImageView = headerView.findViewById(R.id.nav_user_image);
-
+        userNameText = headerView.findViewById(R.id.nav_user_name);
+        userEmailText = headerView.findViewById(R.id.nav_user_email);
 
         // Initialize main menu
         Menu main_menu = navigationView.getMenu();
@@ -129,15 +130,26 @@ public class MainActivity extends AppCompatActivity {
     private void setupNavigationDrawer() {
         View headerView = navigationView.getHeaderView(0);
         userImageView = headerView.findViewById(R.id.nav_user_image);
-
-
+        userNameText = headerView.findViewById(R.id.nav_user_name);
+        userEmailText = headerView.findViewById(R.id.nav_user_email);
 
         userImageView.setOnClickListener(v -> pickImage());
+
+        // Get user type from SharedPreferences
+        SharedPreferences prefs = getSharedPreferences("app_settings", MODE_PRIVATE);
+        userType = prefs.getString("user_type", "User");
+
+        // Show/hide profile options based on user type
+        Menu navMenu = navigationView.getMenu();
+        navMenu.findItem(R.id.nav_profile).setVisible(!"Lawyer".equalsIgnoreCase(userType));
+        navMenu.findItem(R.id.nav_lawyer_profile).setVisible("Lawyer".equalsIgnoreCase(userType));
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
             if (id == R.id.nav_profile) {
                 showEditProfileDialog();
+            } else if (id == R.id.nav_lawyer_profile) {
+                startActivity(new Intent(this, com.malikyasir.landlawassist.Activity.LawyerProfileActivity.class));
             } else if (id == R.id.nav_settings) {
                 showSettingsDialog();
             } else if (id == R.id.nav_help) {
@@ -161,8 +173,24 @@ public class MainActivity extends AppCompatActivity {
                         String fullName = document.getString("fullName");
                         String email = document.getString("email");
                         String imageUrl = document.getString("profileImage");
+                        userType = document.getString("userType");
 
+                        // Update the shared preferences with the user type
+                        SharedPreferences prefs = getSharedPreferences("app_settings", MODE_PRIVATE);
+                        prefs.edit().putString("user_type", userType).apply();
 
+                        // Update navigation header texts
+                        if (userNameText != null && fullName != null) {
+                            userNameText.setText(fullName);
+                        }
+                        if (userEmailText != null && email != null) {
+                            userEmailText.setText(email);
+                        }
+
+                        // Update menu visibility based on user type
+                        Menu navMenu = navigationView.getMenu();
+                        navMenu.findItem(R.id.nav_profile).setVisible(!"Lawyer".equalsIgnoreCase(userType));
+                        navMenu.findItem(R.id.nav_lawyer_profile).setVisible("Lawyer".equalsIgnoreCase(userType));
 
                         // Load profile image if exists
                         if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -233,69 +261,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showEditProfileDialog() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_edit_profile, null);
-        CircleImageView profileImageView = view.findViewById(R.id.profileImageView);
-        TextInputEditText streetAddressInput = view.findViewById(R.id.streetAddressInput);
-        TextInputEditText countryInput = view.findViewById(R.id.countryInput);
-        MaterialButton saveButton = view.findViewById(R.id.saveButton);
-        MaterialButton selectImageButton = view.findViewById(R.id.selectImageButton);
-
-        // Load current profile image
-        String userId = mAuth.getCurrentUser().getUid();
-        db.collection("users").document(userId)
-            .get()
-            .addOnSuccessListener(document -> {
-                if (document.exists()) {
-                    String imageUrl = document.getString("profileImage");
-                    if (imageUrl != null) {
-                        Glide.with(this)
-                            .load(imageUrl)
-                            .placeholder(R.drawable.profileuser)
-                            .into(profileImageView);
-                    }
-                    streetAddressInput.setText(document.getString("streetAddress"));
-                    countryInput.setText(document.getString("country"));
-                }
-            });
-
-        selectImageButton.setOnClickListener(v -> pickImage());
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-            .setView(view)
-            .create();
-
-        saveButton.setOnClickListener(v -> {
-            String streetAddress = streetAddressInput.getText().toString().trim();
-            String country = countryInput.getText().toString().trim();
-
-            if (streetAddress.isEmpty()) {
-                streetAddressInput.setError("Street address is required");
-                return;
-            }
-            if (country.isEmpty()) {
-                countryInput.setError("Country is required");
-                return;
-            }
-
-            // Update user profile
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("streetAddress", streetAddress);
-            updates.put("country", country);
-            updates.put("profileCompletion", 100); // 100% when address is added
-
-            db.collection("users").document(userId)
-                .update(updates)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                    loadUserData(); // Refresh UI
-                })
-                .addOnFailureListener(e -> 
-                    Toast.makeText(this, "Failed to update profile: " + e.getMessage(), 
-                        Toast.LENGTH_SHORT).show());
-        });
-
-        dialog.show();
+        // Launch the ClientProfileActivity instead of showing a dialog
+        startActivity(new Intent(this, com.malikyasir.landlawassist.Activity.ClientProfileActivity.class));
     }
 
     private void showSettingsDialog() {

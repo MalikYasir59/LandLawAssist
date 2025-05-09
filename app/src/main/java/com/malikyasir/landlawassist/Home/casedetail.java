@@ -1,5 +1,7 @@
 package com.malikyasir.landlawassist.Home;
 
+import static android.widget.Toast.LENGTH_SHORT;
+
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -7,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -32,6 +35,7 @@ import com.malikyasir.landlawassist.Modelss.Note;
 import com.malikyasir.landlawassist.R;
 import com.malikyasir.landlawassist.Adapters.DocumentAdapter;
 import com.malikyasir.landlawassist.Adapters.NotesAdapter;
+import com.malikyasir.landlawassist.utils.StorageConfig;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +80,7 @@ public class casedetail extends AppCompatActivity {
         // Get case ID from intent
         caseId = getIntent().getStringExtra("caseId");
         if (caseId == null) {
-            Toast.makeText(this, "Error: Case ID not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: Case ID not found", LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -160,10 +164,10 @@ public class casedetail extends AppCompatActivity {
         db.collection("cases").document(caseId)
             .update(updates)
             .addOnSuccessListener(aVoid -> 
-                Toast.makeText(this, "Next hearing date updated", Toast.LENGTH_SHORT).show())
+                Toast.makeText(this, "Next hearing date updated", LENGTH_SHORT).show())
             .addOnFailureListener(e -> 
                 Toast.makeText(this, "Failed to update hearing date: " + e.getMessage(), 
-                    Toast.LENGTH_SHORT).show());
+                    LENGTH_SHORT).show());
     }
 
     private void showStatusDialog() {
@@ -193,7 +197,7 @@ public class casedetail extends AppCompatActivity {
             .addOnSuccessListener(aVoid -> {
                 currentStatus = newStatus;
                 updateStatusChip();
-                Toast.makeText(this, "Status updated successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Status updated successfully", LENGTH_SHORT).show();
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
             })
             .addOnFailureListener(e -> {
@@ -207,7 +211,7 @@ public class casedetail extends AppCompatActivity {
                 } else {
                     Toast.makeText(this, 
                         "Failed to update status: " + errorMessage, 
-                        Toast.LENGTH_SHORT).show();
+                        LENGTH_SHORT).show();
                 }
             });
     }
@@ -266,7 +270,7 @@ public class casedetail extends AppCompatActivity {
             })
             .addOnFailureListener(e -> 
                 Toast.makeText(this, "Error loading case details: " + e.getMessage(), 
-                    Toast.LENGTH_SHORT).show());
+                    LENGTH_SHORT).show());
     }
 
     private void showAddNoteDialog() {
@@ -296,7 +300,7 @@ public class casedetail extends AppCompatActivity {
                 .collection("notes")
                 .add(note)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(this, "Note added successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Note added successfully", LENGTH_SHORT).show();
                     dialog.dismiss();
                     loadNotes();
                 })
@@ -304,7 +308,7 @@ public class casedetail extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     submitButton.setEnabled(true);
                     Toast.makeText(this, "Error adding note: " + e.getMessage(), 
-                        Toast.LENGTH_SHORT).show();
+                        LENGTH_SHORT).show();
                 });
         });
 
@@ -327,7 +331,7 @@ public class casedetail extends AppCompatActivity {
             })
             .addOnFailureListener(e -> 
                 Toast.makeText(this, "Error loading notes: " + e.getMessage(), 
-                    Toast.LENGTH_SHORT).show());
+                    LENGTH_SHORT).show());
     }
 
     private void pickFile() {
@@ -362,66 +366,123 @@ public class casedetail extends AppCompatActivity {
         // Check authentication first
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Toast.makeText(this, "Please login to upload documents", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please login to upload documents", LENGTH_SHORT).show();
             return;
         }
 
+        // Verify user is authenticated and token is valid
+        currentUser.getIdToken(true)
+            .addOnSuccessListener(getTokenResult -> {
+                // Proceed with upload since token is valid
+                proceedWithUpload(fileUri, currentUser);
+            })
+            .addOnFailureListener(e -> {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(this, "Authentication error: " + e.getMessage(), LENGTH_SHORT).show();
+                Log.e("CaseDetail", "Token refresh failed", e);
+            });
+    }
+
+    private void proceedWithUpload(Uri fileUri, FirebaseUser currentUser) {
         String fileType = getContentResolver().getType(fileUri);
         // Check if file type is supported
-        if (fileType == null || (!fileType.equals("application/pdf") && !fileType.equals("image/png"))) {
-            Toast.makeText(this, "Only PDF and PNG files are supported", Toast.LENGTH_LONG).show();
+        if (fileType == null || (!fileType.startsWith("application/pdf") && !fileType.startsWith("image/"))) {
+            Toast.makeText(this, "Only PDF and image files are supported", Toast.LENGTH_LONG).show();
             return;
         }
 
         progressBar.setVisibility(View.VISIBLE);
         String fileName = getFileName(fileUri);
         
-        // Simplified storage path
-        StorageReference fileRef = FirebaseStorage.getInstance().getReference()
-            .child("documents")
-            .child(System.currentTimeMillis() + "_" + fileName);
+        try {
+            // Set metadata for the file with minimal info
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                .setContentType(fileType)
+                .build();
+            
+            // Use StorageConfig to get the reference
+            String uniqueFileName = System.currentTimeMillis() + "_" + fileName;
+            StorageReference fileRef = StorageConfig.getCaseDocumentsReference(caseId)
+                .child(uniqueFileName);
 
-        // Upload file
-        fileRef.putFile(fileUri)
-            .addOnProgressListener(taskSnapshot -> {
-                double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                // Update progress if needed
-            })
-            .addOnSuccessListener(taskSnapshot -> {
-                fileRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
-                    Document document = new Document(
-                        caseId, 
-                        fileName, 
-                        downloadUrl.toString(), 
-                        currentUser.getUid(),
-                        fileType
-                    );
+            // Upload file with metadata
+            fileRef.putFile(fileUri, metadata)
+                .addOnProgressListener(taskSnapshot -> {
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    // Update progress if needed
+                })
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Get download URL after successful upload
+                    fileRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
+                        // Create a document object
+                        Document document = new Document(
+                            caseId, 
+                            fileName, 
+                            downloadUrl.toString(), 
+                            currentUser.getUid(),
+                            fileType
+                        );
 
-                    db.collection("cases").document(caseId)
-                        .collection("documents")
-                        .add(document)
-                        .addOnSuccessListener(documentReference -> {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(this, "Document uploaded successfully", Toast.LENGTH_SHORT).show();
-                            loadDocuments();
-                        })
-                        .addOnFailureListener(e -> {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(this, "Failed to save document details: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                        });
+                        // Save document metadata to Firestore
+                        db.collection("cases").document(caseId)
+                            .collection("documents")
+                            .add(document)
+                            .addOnSuccessListener(documentReference -> {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(this, "Document uploaded successfully", LENGTH_SHORT).show();
+                                loadDocuments();
+                            })
+                            .addOnFailureListener(e -> {
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(this, "Failed to save document details: " + e.getMessage(), LENGTH_SHORT).show();
+                                
+                                // Log the error for debugging
+                                Log.e("CaseDetail", "Firestore error: " + e.getMessage(), e);
+                            });
+                    }).addOnFailureListener(e -> {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(this, "Failed to get download URL: " + e.getMessage(), LENGTH_SHORT).show();
+                        
+                        // Log the error for debugging
+                        Log.e("CaseDetail", "Download URL error: " + e.getMessage(), e);
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    String errorMsg = "Upload failed: " + e.getMessage();
+                    
+                    // Show a more specific error message based on the error type
+                    if (e.getMessage() != null) {
+                        if (e.getMessage().contains("permission")) {
+                            errorMsg = "Permission denied. Please check your access rights.";
+                        } else if (e.getMessage().contains("network")) {
+                            errorMsg = "Network error. Please check your connection.";
+                        } else if (e.getMessage().contains("canceled")) {
+                            errorMsg = "Upload was canceled.";
+                        } else if (e.getMessage().contains("quota")) {
+                            errorMsg = "Storage quota exceeded.";
+                        } else if (e.getMessage().contains("412")) {
+                            errorMsg = "Service account issue (Error 412). Check Firebase console.";
+                        } else if (e.getMessage().contains("403")) {
+                            errorMsg = "Access forbidden (Error 403). Check your Firebase rules.";
+                        } else if (e.getMessage().contains("404")) {
+                            errorMsg = "Resource not found (Error 404). Check storage path.";
+                        }
+                    }
+                    
+                    // Log extra details that might help debugging
+                    Log.e("CaseDetail", "Upload error full details:", e);
+                    Log.e("CaseDetail", "Upload path: " + fileRef.getPath());
+                    Log.e("CaseDetail", "Content type: " + fileType);
+                    Log.e("CaseDetail", "Auth UID: " + (currentUser != null ? currentUser.getUid() : "null"));
+                    
+                    Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show();
                 });
-            })
-            .addOnFailureListener(e -> {
-                progressBar.setVisibility(View.GONE);
-                String errorMessage = e.getMessage();
-                if (errorMessage != null && errorMessage.contains("permission")) {
-                    Toast.makeText(this, "Permission denied. Please check your access rights.", 
-                        Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this, "Upload failed: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-            });
+        } catch (Exception e) {
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(this, "Error: " + e.getMessage(), LENGTH_SHORT).show();
+            Log.e("CaseDetail", "Upload exception: " + e.getMessage(), e);
+        }
     }
 
     private String getFileName(Uri uri) {
@@ -462,6 +523,6 @@ public class casedetail extends AppCompatActivity {
             })
             .addOnFailureListener(e -> 
                 Toast.makeText(this, "Error loading documents: " + e.getMessage(), 
-                    Toast.LENGTH_SHORT).show());
+                    LENGTH_SHORT).show());
     }
 }

@@ -24,15 +24,70 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:text="Status"
+                android:text="Cases Management"
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <!-- Filter Chips inside Horizontal Scroll -->
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Clients Section (For Lawyers) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <!-- Clients Section Title -->
+            <TextView
+                android:id="@+id/clientSectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Approved Clients"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <!-- No Clients Text -->
+            <TextView
+                android:id="@+id/noClientsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="No approved clients found"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <!-- Clients RecyclerView (horizontal list) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/clientsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- Cases Container -->
+        <LinearLayout
+            android:id="@+id/casesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Status Filter -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/rating_bar_tint"
                 android:scrollbars="none"
                 android:paddingHorizontal="16dp"
                 android:paddingBottom="8dp">
@@ -72,58 +127,58 @@
 
                 </com.google.android.material.chip.ChipGroup>
             </HorizontalScrollView>
-        </com.google.android.material.appbar.AppBarLayout>
 
-        <!-- FrameLayout for RecyclerView and Empty State -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!-- RecyclerView -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/casesRecyclerView"
+            <!-- FrameLayout for RecyclerView and Empty State -->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="8dp"
-                android:background="#F4F2F2"
-                android:clipToPadding="false" />
+                android:layout_height="match_parent">
 
-            <!-- Empty State -->
-            <LinearLayout
-                android:id="@+id/emptyStateLayout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
+                <!-- RecyclerView -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/casesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="8dp"
+                    android:background="#F4F2F2"
+                    android:clipToPadding="false" />
 
-                <!-- App Logo -->
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:alpha="0.5"
-                    android:src="@drawable/applogoland" />
-
-                <!-- Empty State Message -->
-                <TextView
+                <!-- Empty State -->
+                <LinearLayout
+                    android:id="@+id/emptyStateLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="No cases found"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/black" />
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
-            </LinearLayout>
+                    <!-- App Logo -->
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:alpha="0.5"
+                        android:src="@drawable/applogoland" />
 
-            <!-- Progress Bar -->
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
-        </FrameLayout>
+                    <!-- Empty State Message -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="No cases found"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/black" />
+
+                </LinearLayout>
+
+                <!-- Progress Bar -->
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Floating Action Button -->

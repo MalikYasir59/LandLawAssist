@@ -135,11 +135,32 @@
                 android:value=".Home.MainActivity" />
         </activity>
 
-       
+        <activity
+            android:name=".Activity.ClientCasesActivity"
+            android:exported="true"
+            android:parentActivityName=".Home.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Home.MainActivity" />
+        </activity>
 
+        <activity
+            android:name=".Activity.LawyerProfileActivity"
+            android:exported="true"
+            android:parentActivityName=".Home.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".Activity.ClientProfileActivity"
+            android:exported="true"
+            android:parentActivityName=".Home.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
