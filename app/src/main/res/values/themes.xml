@@ -1,15 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.LandLawAssist" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        
+        <!-- Secondary colors -->
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/secondaryLight</item>
+        
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/cardBackground</item>
+        <item name="colorOnSurface">@color/textPrimary</item>
+        
+        <!-- Text colors -->
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnSecondary">@color/white</item>
+        
+        <!-- Status bar and navigation bar -->
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        
+        <!-- Shape appearances - reference the styles from styles.xml -->
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.LandLaw.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.LandLaw.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.LandLaw.LargeComponent</item>
     </style>
 
-    <style name="Theme.LandLawAssist" parent="Base.Theme.LandLawAssist" />
+    <!-- Renamed to avoid conflict with the one in styles.xml -->
+    <style name="Theme.LandLawAssistMaterial3" parent="Base.Theme.LandLawAssist" />
 
-    <style name="Theme.LandLawAssist.NoActionBar" parent="Theme.LandLawAssist">
+    <style name="Theme.LandLawAssist.NoActionBar.Material3" parent="Theme.LandLawAssistMaterial3">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
@@ -20,7 +44,7 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsFloating">false</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 </resources>

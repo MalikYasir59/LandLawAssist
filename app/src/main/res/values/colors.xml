@@ -60,7 +60,7 @@
 
     <color name="selector_bottom_nav">#18FF07</color>
     <color name="selector_bottom_nav2">#18FF07</color>
-    <color name="topgradient">#006064</color>
+    <color name="topgradient">#5B21B6</color>
 
     <!-- Status colors -->
     <color name="pending_color">#FFA000</color> <!-- Amber -->

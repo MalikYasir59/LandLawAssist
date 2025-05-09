@@ -1,104 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F3EDED">
+    android:fillViewport="true"
+    android:background="@color/background">
 
-
-
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="189dp"
-        android:background="@drawable/top_section_background"
-        android:clipToOutline="true"
-        android:elevation="4dp"
-        android:minHeight="200dp"
-        android:paddingBottom="24dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-
-        <LinearLayout
+        <!-- Home Header Section -->
+        <include
+            android:id="@+id/homeHeader"
+            layout="@layout/layout_home_header"
             android:layout_width="match_parent"
-            android:layout_height="182dp"
-            android:orientation="vertical">
-
+            android:layout_height="wrap_content" />
+            
+        <!-- Profile Completion Card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/profileCompletionCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="-28dp"
+            style="@style/Widget.LandLaw.CardView">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="78dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="47dp"
-                    android:layout_height="46dp"
-                    android:elevation="4dp"
-                    android:src="@drawable/profileuser"
-                    app:civ_border_color="#0C0606"
-                    app:civ_border_width="3dp" />
-
-                <LinearLayout
-                    android:layout_width="199dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Welcome"
-                        android:textColor="#E0E0E0"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/userName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="#FFFFFF"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-
-                <!-- Notification with Badge -->
-                <FrameLayout
-                    android:id="@+id/notificationContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp">
-
-                    <ImageView
-                        android:id="@+id/notificationIcon"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:src="@drawable/ic_notification"
-                        app:tint="#FFFFFF" />
-
-                    <TextView
-                        android:id="@+id/notificationBadge"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_gravity="end|top"
-                        android:background="@drawable/notification_badge_background"
-                        android:gravity="center"
-                        android:text="0"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp" />
-                </FrameLayout>
-            </LinearLayout>
-
-            <!-- Profile Completion Card -->
-
-            <LinearLayout
-                android:layout_width="361dp"
-                android:layout_height="84dp"
-                android:layout_marginLeft="18dp"
-                android:background="@drawable/dark_card_background"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="16dp">
 
@@ -113,8 +45,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Complete your profile"
-                        android:textColor="#FFFFFF"
-                        android:textSize="20sp"
+                        android:textColor="@color/textPrimary"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -122,8 +54,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Completing your profile will make easier for you find the best lawyers"
-                        android:textColor="#9E9E9E" />
+                        android:text="Completing your profile will make it easier to find the best lawyers"
+                        android:textColor="@color/textSecondary"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <FrameLayout
@@ -141,191 +74,173 @@
                         android:max="100"
                         android:progress="40"
                         android:progressDrawable="@drawable/profile_progress_drawable" />
-                </FrameLayout>
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/profileCompletionCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="55dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
-
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:spacing="8dp">
-
-            <!-- Find Lawyers Button -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/findLawyersCard"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="4dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="5dp">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_search"
-                        app:tint="@color/background" />
 
                     <TextView
+                        android:id="@+id/progressText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Find Lawyers"
-                        android:textColor="@color/background"
+                        android:layout_gravity="center"
+                        android:text="40%"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- View My Cases Button -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/myLawyersCard"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="4dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp"
-                    android:gravity="center">
-
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_lawyerone"
-                        app:tint="@color/background"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="My Lawyers"
-                        android:textStyle="bold"
-                        android:layout_marginTop="8dp"
-                        android:textColor="@color/background"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-        </LinearLayout>
-
-        <!-- Lawyer Messages Button (for lawyers only) -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/messagesCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp"
-            android:visibility="gone">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="12dp">
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/app_logo"
-                    app:tint="@color/background" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Messages"
-                    android:textColor="@color/background"
-                    android:textStyle="bold"
-                    android:layout_marginStart="12dp"/>
+                </FrameLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Lawyer Clients List (for lawyers only) -->
-        <TextView
-            android:id="@+id/noClientsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No client"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/clientsRecyclerView"
+
+
+
+
+
+        <!-- Lawyer Clients Section (for lawyers only) -->
+        <LinearLayout
+            android:id="@+id/clientsSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"/>
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_marginTop="24dp"
+            android:visibility="gone">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Clients"
+                android:textColor="@color/textPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="12dp" />
+                
+            <TextView
+                android:id="@+id/noClientsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You have no clients yet"
+                android:textColor="@color/textSecondary"
+                android:textSize="16sp"
+                android:layout_marginStart="16dp"
+                android:visibility="gone"/>
+                
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/clientsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingHorizontal="8dp"
+                android:visibility="gone"/>
+        </LinearLayout>
 
-    <!-- Featured Lawyers Section -->
-    <LinearLayout
-        android:id="@+id/featuredLawyersSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:text="Featured Lawyers"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <!-- City Filter Dropdown -->
-       <ListView
-    android:id="@+id/cityListView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:visibility="visible" />
-
-        <!-- Update ViewPager2 -->
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/lawyerViewPager"
+        <!-- Featured Lawyers Section -->
+        <LinearLayout
+            android:id="@+id/featuredLawyersSection"
             android:layout_width="match_parent"
-            android:layout_height="317dp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Featured Lawyers"
+                android:textColor="@color/textPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Top rated lawyers in your area"
+                android:textColor="@color/textSecondary"
+                android:textSize="14sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- City Filter Dropdown -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="12dp">
+                
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cityChipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="16dp"
+                    app:singleSelection="true"
+                    app:selectionRequired="true">
+                    
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="All Cities"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
+                        android:checked="true"/>
+                        
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lahore"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"/>
+                        
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Karachi"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"/>
+                        
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Islamabad"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"/>
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+            
+            <!-- Update ViewPager2 -->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/lawyerViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                android:paddingHorizontal="16dp"
+                android:clipToPadding="false" />
+                
+            <ListView
+                android:id="@+id/cityListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- My Lawyers Section -->
+        <LinearLayout
+            android:id="@+id/myLawyersListSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp">
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Lawyers"
+                android:textColor="@color/textPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="12dp" />
+                
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/myLawyersRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingHorizontal="8dp"
+                android:visibility="visible"/>
+        </LinearLayout>
     </LinearLayout>
-
-    <!-- My Lawyers Horizontal List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/myLawyersRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:visibility="visible"/>
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

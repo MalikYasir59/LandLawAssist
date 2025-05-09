@@ -60,7 +60,7 @@
         <activity
             android:name=".Home.splash"
             android:exported="true"
-            android:theme="@style/Theme.LandLawAssist.NoActionBar">
+            android:theme="@style/Theme.LandLawAssist.NoActionBar.Material3">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -155,6 +155,15 @@
 
         <activity
             android:name=".Activity.ClientProfileActivity"
+            android:exported="true"
+            android:parentActivityName=".Home.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Home.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".Activity.MessagingActivity"
             android:exported="true"
             android:parentActivityName=".Home.MainActivity">
             <meta-data

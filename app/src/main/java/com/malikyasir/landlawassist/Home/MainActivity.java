@@ -186,6 +186,13 @@ public class MainActivity extends AppCompatActivity {
                         if (userEmailText != null && email != null) {
                             userEmailText.setText(email);
                         }
+                        
+                        // Set user type in navigation header if the view exists
+                        TextView navUserType = navigationView.getHeaderView(0).findViewById(R.id.nav_user_type);
+                        if (navUserType != null && userType != null) {
+                            navUserType.setText(userType);
+                            navUserType.setVisibility(View.VISIBLE);
+                        }
 
                         // Update menu visibility based on user type
                         Menu navMenu = navigationView.getMenu();
