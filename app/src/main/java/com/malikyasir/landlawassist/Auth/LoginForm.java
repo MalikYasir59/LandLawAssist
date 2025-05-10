@@ -2,8 +2,12 @@ package com.malikyasir.landlawassist.Auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +28,10 @@ import com.malikyasir.landlawassist.Modelss.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.view.animation.LinearInterpolator;
+
 public class LoginForm extends AppCompatActivity {
 
     private TextInputEditText emailInput, passwordInput;
@@ -33,6 +41,9 @@ public class LoginForm extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Set status bar color to deep_blue
+        getWindow().setStatusBarColor(getResources().getColor(R.color.deep_blue));
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();

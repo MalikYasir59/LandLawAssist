@@ -66,6 +66,23 @@
     <color name="pending_color">#FFA000</color> <!-- Amber -->
     <color name="accepted_color">#4CAF50</color> <!-- Green -->
     <color name="rejected_color">#F44336</color> <!-- Red -->
+
+    <color name="deep_blue">#254262</color>
+    <color name="teal">#149DA5</color>
+    <color name="light_aqua">#51E4BA</color>
+    <color name="mint_green">#8CF1A3</color>
+
+    <color name="space_black">#000000</color>
+    <color name="space_gradient_start">#0f1b2e</color>
+    <color name="space_gradient_mid">#1e3c72</color>
+    <color name="space_gradient_end">#2a5298</color>
+    <color name="bright_cyan">#00e0ff</color>
+    <color name="light_blue">#00ccff</color>
+    <color name="link_blue">#5edfff</color>
+    <color name="input_border">#00ccff</color>
+    <color name="button_bg">#00bcd4</color>
+    <color name="icon_gray">#888888</color>
+    <color name="icon_light_gray">#cccccc</color>
 </resources>
 
 
