@@ -1,30 +1,241 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/ic_ai_assistant"
-        android:contentDescription="AI Assistant"
-        android:layout_gravity="center" />
+    <!-- Main Content -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#f5f5f5">
 
-    <TextView
+        <!-- Header -->
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#6200EE"
+            android:elevation="4dp"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pakistani Land Law Assistant"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <!-- Main content -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Query input with rounded corners -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/searchCardView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="2dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/searchButton"
+                android:layout_marginEnd="8dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/queryInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ask a Question (Land Law Only)"
+                    app:endIconMode="clear_text"
+                    android:background="@android:color/transparent"
+                    app:boxBackgroundMode="none">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/queryInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:padding="12dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/searchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Search"
+                android:textColor="#FFFFFF"
+                app:icon="@drawable/ic_search"
+                app:iconTint="#FFFFFF"
+                android:backgroundTint="#6200EE"
+                app:cornerRadius="24dp"
+                app:layout_constraintTop_toTopOf="@id/searchCardView"
+                app:layout_constraintBottom_toBottomOf="@id/searchCardView"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Actions Bar -->
+            <LinearLayout
+                android:id="@+id/actionsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/searchCardView">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/clearButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Clear"
+                    android:textColor="#6200EE"
+                    app:icon="@drawable/ic_delete"
+                    app:iconTint="#6200EE"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/exportButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Export"
+                    android:textColor="#6200EE"
+                    app:icon="@drawable/ic_share"
+                    app:iconTint="#6200EE"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            </LinearLayout>
+
+            <!-- Progress Indicator -->
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progressIndicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/actionsLayout" />
+
+            <!-- Answer Section -->
+            <TextView
+                android:id="@+id/answerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Answer:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/actionsLayout"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/answerCardView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp"
+                app:layout_constraintTop_toBottomOf="@id/answerLabel"
+                app:layout_constraintHeight_percent="0.35">
+
+                <ScrollView
+                    android:id="@+id/answerScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/answerText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:textSize="14sp"
+                        android:textIsSelectable="true" />
+                </ScrollView>
+            </androidx.cardview.widget.CardView>
+
+            <!-- References Section -->
+            <TextView
+                android:id="@+id/referencesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="References:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintTop_toBottomOf="@id/answerCardView"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/referencesCardView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="1dp"
+                app:layout_constraintTop_toBottomOf="@id/referencesLabel"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <ScrollView
+                    android:id="@+id/referencesScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/referencesText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="12dp"
+                        android:textSize="14sp"
+                        android:textIsSelectable="true"
+                        android:autoLink="web" />
+                </ScrollView>
+            </androidx.cardview.widget.CardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Query History Navigation Drawer -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/historyNavigationView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="AI Legal Assistant"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:gravity="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Get instant legal guidance from our AI assistant." />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#202020"
+        android:fitsSystemWindows="true">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Query History"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:padding="16dp"
+                android:background="#151515" />
+                
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/historyRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:clipToPadding="false" />
+        </LinearLayout>
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>

@@ -63,6 +63,9 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.6.1'
     implementation 'androidx.navigation:navigation-ui:2.8.5'
 
+    // OkHttp for API calls
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+
     // Testing
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
