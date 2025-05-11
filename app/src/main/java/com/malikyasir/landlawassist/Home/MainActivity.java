@@ -12,6 +12,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
         
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        // Set status bar color to deep blue
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.deep_blue));
         
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -412,18 +416,22 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new Homefragment();
                 }
                 getSupportActionBar().setTitle("");
+                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 enableDrawer(true);
             } else if (item.getItemId() == R.id.nav_legal_resources) {
                 selectedFragment = new LegalResourcesFragment();
                 getSupportActionBar().setTitle("Legal Resources");
+                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.deep_blue));
                 enableDrawer(false);
             } else if (item.getItemId() == R.id.nav_case_management) {
                 selectedFragment = new CaseManagementFragment();
                 getSupportActionBar().setTitle("Case Management");
+                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 enableDrawer(false);
             } else if (item.getItemId() == R.id.nav_ai_assistant) {
                 selectedFragment = new AIAssistantFragment();
                 getSupportActionBar().setTitle("AI Assistant");
+                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 enableDrawer(false);
             }
             if (selectedFragment != null) {

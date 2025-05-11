@@ -10,89 +10,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#1E3C72">
 
         <!-- Home Header Section -->
         <include
             android:id="@+id/homeHeader"
             layout="@layout/layout_home_header"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content" />
             
-        <!-- Profile Completion Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/profileCompletionCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="-28dp"
-            style="@style/Widget.LandLaw.CardView">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/profileStatusText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Complete your profile"
-                        android:textColor="@color/textPrimary"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/profileStatusDescription"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Completing your profile will make it easier to find the best lawyers"
-                        android:textColor="@color/textSecondary"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="16dp">
-
-                    <ProgressBar
-                        android:id="@+id/profileProgress"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:indeterminate="false"
-                        android:max="100"
-                        android:progress="40"
-                        android:progressDrawable="@drawable/profile_progress_drawable" />
-
-                    <TextView
-                        android:id="@+id/progressText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="40%"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-
-
-
-
-
         <!-- Lawyer Clients Section (for lawyers only) -->
         <LinearLayout
             android:id="@+id/clientsSection"
@@ -137,13 +65,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:background="#1E3C72">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Featured Lawyers"
-                android:textColor="@color/textPrimary"
+                android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"
@@ -153,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Top rated lawyers in your area"
-                android:textColor="@color/textSecondary"
+                android:textColor="@color/textLight"
                 android:textSize="14sp"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="12dp" />
@@ -228,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="My Lawyers"
-                android:textColor="@color/textPrimary"
+                android:textColor="@android:color/white"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"
@@ -240,6 +169,7 @@
                 android:layout_height="wrap_content"
                 android:clipToPadding="false"
                 android:paddingHorizontal="8dp"
+                android:paddingBottom="80dp"
                 android:visibility="visible"/>
         </LinearLayout>
     </LinearLayout>

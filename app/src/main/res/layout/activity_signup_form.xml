@@ -1,79 +1,87 @@
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/loginback"
-    android:padding="16dp">
+    android:background="@android:color/transparent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="center">
-
+        android:gravity="center"
+        android:padding="24dp">
 
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/applogoland"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="16dp"
             android:contentDescription="Logo" />
+            
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to LandLawAssist"
+            android:textColor="#2196F3"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundMode="outline"
             app:boxStrokeColor="#FFFFFF"
-            app:hintTextColor="@color/white">
+            app:hintTextColor="#FFFFFF"
+            android:background="@android:color/transparent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/fullNameInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Full Name"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#F3F1F1"
-                android:drawableRight="@drawable/profileuser"
+                android:textColor="#000000"
+                android:textColorHint="#757575"
+                android:drawableEnd="@drawable/profileuser"
                 android:inputType="textPersonName"
-           />
+                android:padding="16dp"
+                android:background="#F9F9F9" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:boxStrokeColor="#FFFFFF"
+            android:layout_marginBottom="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundMode="outline"
-
-            app:hintTextColor="@color/white">
+            app:boxStrokeColor="#FFFFFF"
+            app:hintTextColor="#FFFFFF"
+            android:background="@android:color/transparent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/emailInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Email"
-                app:boxStrokeColor="#FFFFFF"
-                android:drawableRight="@drawable/mail"
+                android:drawableEnd="@drawable/mail"
                 android:inputType="textEmailAddress"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#F3F1F1"
-              />
+                android:textColor="#000000"
+                android:textColorHint="#757575"
+                android:padding="16dp"
+                android:background="#F9F9F9" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundMode="outline"
             app:passwordToggleEnabled="true"
-
             app:boxStrokeColor="#FFFFFF"
-            app:hintTextColor="@color/white">
+            app:hintTextColor="#FFFFFF"
+            android:background="@android:color/transparent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordInput"
@@ -81,66 +89,67 @@
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#F3F1F1"
-              />
+                android:textColor="#000000"
+                android:textColorHint="#757575"
+                android:padding="16dp"
+                android:background="#F9F9F9" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            app:boxBackgroundMode="outline"
-
             app:boxStrokeColor="#FFFFFF"
-            app:hintTextColor="@color/white">
+            app:hintTextColor="#FFFFFF"
+            android:background="@android:color/transparent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/phoneInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Phone Number"
-                android:drawableRight="@drawable/telephonecall"
+                android:drawableEnd="@drawable/telephonecall"
                 android:inputType="phone"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#F3F1F1"
-
-             />
+                android:textColor="#000000"
+                android:textColorHint="#757575"
+                android:padding="16dp"
+                android:background="#F9F9F9" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            app:boxBackgroundMode="outline"
-            app:boxStrokeColor="@color/background"
-            app:hintTextColor="@color/background">
+            app:boxStrokeColor="#FFFFFF"
+            app:hintTextColor="#FFFFFF"
+            android:background="@android:color/transparent">
 
             <AutoCompleteTextView
                 android:id="@+id/userTypeSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableRight="@drawable/about"
-                android:hint="User"
-
+                android:drawableEnd="@drawable/about"
+                android:hint="User Type"
                 android:inputType="none"
-                android:textColor="@color/background"
-
-                android:textColorHint="@color/background" />
+                android:textColor="#000000" 
+                android:textColorHint="#757575"
+                android:padding="16dp"
+                android:background="#F9F9F9" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-
             android:text="Register"
-            app:backgroundTint="#00796B"
-            android:textColor="#000000"
-            android:padding="12dp" />
+            app:backgroundTint="#2196F3"
+            android:textColor="#FFFFFF"
+            android:padding="12dp"
+            app:cornerRadius="8dp"
+            android:textStyle="bold"
+            android:textSize="16sp" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -148,5 +157,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:visibility="gone" />
+            
+        <TextView
+            android:id="@+id/loginPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already have an account? Login"
+            android:textColor="#2196F3"
+            android:textSize="14sp"
+            android:layout_marginTop="16dp"/>
     </LinearLayout>
 </ScrollView>

@@ -19,7 +19,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
-                android:background="@color/topgradient"
+                android:background="@drawable/gradient_card_background_primary"
                 android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar" />
 
         </com.google.android.material.appbar.AppBarLayout>

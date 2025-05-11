@@ -57,10 +57,6 @@ public class Homefragment extends Fragment {
     private TextView notificationBadge;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private ProgressBar profileProgress;
-    private View profileCompletionCard;
-    private TextView profileStatusText;
-    private TextView profileStatusDescription;
     private ViewPager2 lawyerViewPager;
     private RecyclerView clientsRecyclerView;
     private TextView noClientsText;
@@ -83,10 +79,6 @@ public class Homefragment extends Fragment {
         
         profileImage = view.findViewById(R.id.profileImage);
         notificationBadge = view.findViewById(R.id.notificationBadge);
-        profileProgress = view.findViewById(R.id.profileProgress);
-        profileCompletionCard = view.findViewById(R.id.profileCompletionCard);
-        profileStatusText = view.findViewById(R.id.profileStatusText);
-        profileStatusDescription = view.findViewById(R.id.profileStatusDescription);
         lawyerViewPager = view.findViewById(R.id.lawyerViewPager);
         clientsRecyclerView = view.findViewById(R.id.clientsRecyclerView);
         noClientsText = view.findViewById(R.id.noClientsText);
@@ -105,11 +97,6 @@ public class Homefragment extends Fragment {
         userType = prefs.getString("user_type", "User");
 
         // Hide profile completion card for all users
-        if (profileCompletionCard != null) {
-            profileCompletionCard.setVisibility(View.GONE);
-        }
-        
-        // Show search card for all users
         View searchCard = view.findViewById(R.id.searchCard);
         if (searchCard != null) {
             searchCard.setVisibility(View.VISIBLE);
@@ -262,8 +249,6 @@ public class Homefragment extends Fragment {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             // Handle not logged in case
-            if (profileStatusText != null) profileStatusText.setText("Please log in");
-            if (profileStatusDescription != null) profileStatusDescription.setText("You need to log in to view your profile");
             return;
         }
         
@@ -273,46 +258,7 @@ public class Homefragment extends Fragment {
             .document(userId)
             .get()
             .addOnSuccessListener(document -> {
-                if (document.exists()) {
-                    String streetAddress = document.getString("streetAddress");
-                    String country = document.getString("country");
-
-                    // Calculate progress
-                    int progress;
-
-                    // Check if address is complete
-                    boolean isAddressComplete = streetAddress != null && !streetAddress.isEmpty()
-                        && country != null && !country.isEmpty();
-
-                    if (isAddressComplete) {
-                        progress = 100;
-                        // Update Firestore with 100% completion
-                        document.getReference().update("profileCompletion", 100)
-                            .addOnSuccessListener(aVoid -> {
-                                // Update text instead of hiding
-                                profileStatusText.setText("Profile Completed");
-                                profileStatusDescription.setText("Your profile is now complete and ready to use");
-                            });
-                    } else {
-                        progress = 50;
-                        // Update Firestore with 50% completion
-                        document.getReference().update("profileCompletion", 50);
-                        // Set default text
-                        profileStatusText.setText("Complete your profile");
-                        profileStatusDescription.setText("Completing your profile will make easier for you find the best lawyers");
-                    }
-
-                    // Animate progress bar
-                    ObjectAnimator animation = ObjectAnimator.ofInt(
-                        profileProgress,
-                        "progress",
-                        0,
-                        progress
-                    );
-                    animation.setDuration(1000);
-                    animation.setInterpolator(new DecelerateInterpolator());
-                    animation.start();
-                }
+                // No UI update for profile completion anymore
             })
             .addOnFailureListener(e -> {
                 Toast.makeText(getContext(), "Error loading profile", Toast.LENGTH_SHORT).show();
