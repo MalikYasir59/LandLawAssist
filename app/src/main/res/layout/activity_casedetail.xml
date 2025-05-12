@@ -1,93 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F5F5F5">
 
+    <!-- Toolbar -->
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#1a3876"
+        app:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="#1E3C72"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:navigationIcon="@drawable/ic_back" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Main Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@color/deep_blue"
             android:padding="16dp">
 
-            <!-- Case Details Card -->
-            <com.google.android.material.card.MaterialCardView
+            <!-- Case Info Card -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="286dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#000000"
                 app:cardCornerRadius="8dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:strokeColor="#1a3876"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+
                     android:orientation="vertical"
                     android:padding="16dp">
 
+                    <!-- Case Number -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/caseNumber"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textSize="16sp" />
+                            android:text="1"
+                            android:textColor="#FFFFFF"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
 
-                        <com.google.android.material.chip.Chip
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1" />
+
+                        <TextView
                             android:id="@+id/statusChip"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp" />
+                            android:background="@drawable/status_chip_background"
+                            android:paddingStart="12dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="4dp"
+                            android:text="ACTIVE"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
                     </LinearLayout>
 
+                    <!-- Court -->
                     <TextView
-                        android:id="@+id/court"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp" />
-
-                    <TextView
-                        android:id="@+id/filingDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp" />
-
-                    <TextView
-                        android:id="@+id/description"
+                        android:id="@+id/courtText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp" />
+                        android:layout_marginTop="16dp"
+                        android:text="Civil Court"
+                        android:textColor="#CCCCCC"
+                        android:textSize="16sp" />
+
+                    <!-- Case Title -->
+                    <TextView
+                        android:id="@+id/caseTitleText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="land issue"
+                        android:textColor="#CCCCCC"
+                        android:textSize="16sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </androidx.cardview.widget.CardView>
 
             <!-- Next Hearing Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/nextHearingCard"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="8dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:cardElevation="2dp">
 
                 <LinearLayout
@@ -97,124 +119,135 @@
                     android:padding="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Next Hearing"
-                        android:textSize="18sp"
+                        android:textColor="#1a3876"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/nextHearing"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:textSize="16sp" />
+                        android:text=""
+                        android:textColor="#666666"
+                        android:textSize="14sp" />
                 </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+            </androidx.cardview.widget.CardView>
 
-            <!-- Button Section -->
+            <!-- Action Buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addHearingButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="8dp"
                     android:text="Add Hearing"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:icon="@drawable/ic_calendar" />
+                    app:icon="@drawable/ic_calendar"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#00BCD4"
+                    app:iconTint="#FFFFFF"
+                    style="@style/Widget.MaterialComponents.Button" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/editStatusButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="8dp"
                     android:text="Edit Status"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:icon="@drawable/ic_status" />
+                    app:icon="@drawable/ic_edit"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#00BCD4"
+                    app:iconTint="#FFFFFF"
+                    style="@style/Widget.MaterialComponents.Button" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/addNoteButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="8dp"
                     android:text="Add Note"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:icon="@drawable/ic_note" />
+                    app:icon="@drawable/ic_note"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#00BCD4"
+                    app:iconTint="#FFFFFF"
+                    style="@style/Widget.MaterialComponents.Button" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/uploadDocumentButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="8dp"
                     android:text="Upload Doc"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:icon="@drawable/ic_upload" />
+                    app:icon="@drawable/ic_upload"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#00BCD4"
+                    app:iconTint="#FFFFFF"
+                    style="@style/Widget.MaterialComponents.Button" />
             </LinearLayout>
 
-
-
-
-            <!-- Notes Section -->
+            <!-- Case Notes Section -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:text="Case Notes"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textColor="#F5F8FD"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
 
             <!-- Notes RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/notesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:nestedScrollingEnabled="false" />
 
             <!-- Documents Section -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:text="Documents"
-                android:textSize="20sp"
-                android:textStyle="bold"/>
+                android:textColor="#EDEDEF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
 
+            <!-- Documents RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/documentsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:nestedScrollingEnabled="false"/>
+                android:nestedScrollingEnabled="false" />
 
-
-
+            <!-- Progress Bar -->
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone" />
-
-    <!-- Floating Action Button -->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -11,24 +11,19 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f5f5f5">
+        android:background="@drawable/gradient_activity_background">
 
         <!-- Header -->
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#1E3C72"
+            android:background="@color/deep_blue"
             android:elevation="4dp"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pakistani Land Law Assistant"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+
         </androidx.appcompat.widget.Toolbar>
 
         <!-- Main content -->
@@ -79,7 +74,7 @@
                 android:textColor="#FFFFFF"
                 app:icon="@drawable/ic_search"
                 app:iconTint="#FFFFFF"
-                android:backgroundTint="#6200EE"
+                android:backgroundTint="#00BCD4"
                 app:cornerRadius="24dp"
                 app:layout_constraintTop_toTopOf="@id/searchCardView"
                 app:layout_constraintBottom_toBottomOf="@id/searchCardView"
@@ -101,19 +96,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:text="Clear"
-                    android:textColor="#6200EE"
+
                     app:icon="@drawable/ic_delete"
-                    app:iconTint="#6200EE"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+                    app:iconTint="#E91E63"
+                    style="@style/DeleteButton" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/exportButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Export"
-                    android:textColor="#6200EE"
+                    android:textColor="#FFFFFF"
                     app:icon="@drawable/ic_share"
-                    app:iconTint="#6200EE"
+                    app:iconTint="#F5EDF6"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
             </LinearLayout>
 
@@ -125,6 +120,7 @@
                 android:layout_marginTop="8dp"
                 android:indeterminate="true"
                 android:visibility="gone"
+                app:indicatorColor="#9c27b0"
                 app:layout_constraintTop_toBottomOf="@id/actionsLayout" />
 
             <!-- Answer Section -->
@@ -135,6 +131,7 @@
                 android:text="Answer:"
                 android:textStyle="bold"
                 android:textSize="16sp"
+                android:textColor="#FFFFFF"
                 android:layout_marginTop="16dp"
                 app:layout_constraintTop_toBottomOf="@id/actionsLayout"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -147,6 +144,7 @@
                 android:layout_marginBottom="8dp"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="1dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/answerLabel"
                 app:layout_constraintHeight_percent="0.35">
 
@@ -161,6 +159,7 @@
                         android:layout_height="wrap_content"
                         android:padding="12dp"
                         android:textSize="14sp"
+                        android:textColor="#000000"
                         android:textIsSelectable="true" />
                 </ScrollView>
             </androidx.cardview.widget.CardView>
@@ -173,6 +172,7 @@
                 android:text="References:"
                 android:textStyle="bold"
                 android:textSize="16sp"
+                android:textColor="#FFFFFF"
                 android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@id/answerCardView"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -184,6 +184,7 @@
                 android:layout_marginTop="8dp"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="1dp"
+                app:cardBackgroundColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/referencesLabel"
                 app:layout_constraintBottom_toBottomOf="parent">
 
@@ -198,6 +199,7 @@
                         android:layout_height="wrap_content"
                         android:padding="12dp"
                         android:textSize="14sp"
+                        android:textColor="#000000"
                         android:textIsSelectable="true"
                         android:autoLink="web" />
                 </ScrollView>

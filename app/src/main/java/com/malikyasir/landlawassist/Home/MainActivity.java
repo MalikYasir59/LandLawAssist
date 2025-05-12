@@ -40,6 +40,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import android.widget.RadioGroup;
 import android.os.Handler;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -383,10 +384,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.notificationContainer) {
-            // Handle notifications
-            return true;
-        } else if (id == R.id.nav_settings) {
+
+        if (id == R.id.nav_settings) {
             showSettingsDialog();
             return true;
         } else if (id == R.id.nav_logout) {
@@ -416,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
                     selectedFragment = new Homefragment();
                 }
                 getSupportActionBar().setTitle("");
-                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.deep_blue));
                 enableDrawer(true);
             } else if (item.getItemId() == R.id.nav_legal_resources) {
                 selectedFragment = new LegalResourcesFragment();
@@ -426,12 +425,12 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.nav_case_management) {
                 selectedFragment = new CaseManagementFragment();
                 getSupportActionBar().setTitle("Case Management");
-                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.deep_blue));
                 enableDrawer(false);
             } else if (item.getItemId() == R.id.nav_ai_assistant) {
                 selectedFragment = new AIAssistantFragment();
                 getSupportActionBar().setTitle("AI Assistant");
-                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                findViewById(R.id.toolbar).setBackgroundColor(getResources().getColor(R.color.deep_blue));
                 enableDrawer(false);
             }
             if (selectedFragment != null) {
@@ -484,7 +483,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadUserData(); // Refresh user data when activity resumes
+        // Refresh user data when activity resumes
+        loadUserData();
+        
+        // Check if current fragment is not AIAssistantFragment
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (!(currentFragment instanceof AIAssistantFragment)) {
+            // Reset toolbar to ensure it's properly configured
+            resetToolbar();
+        }
     }
 
     @Override
@@ -492,5 +499,70 @@ public class MainActivity extends AppCompatActivity {
         // Remove any callbacks that might be pending
         new Handler().removeCallbacksAndMessages(null);
         super.onDestroy();
+    }
+
+    /**
+     * Resets the toolbar to the default state.
+     * This is called when returning from fragments that modify the toolbar.
+     */
+    public void resetToolbar() {
+        try {
+            // Re-setup the toolbar with proper configuration
+            Toolbar toolbar = findViewById(R.id.toolbar);
+            if (toolbar != null) {
+                setSupportActionBar(toolbar);
+                
+                // First remove any existing drawer listeners to prevent duplicates
+                if (drawerLayout != null) {
+                    // Try to get any existing toggle from the drawer layout
+                    Object existingToggle = drawerLayout.getTag(R.id.drawer_layout);
+                    if (existingToggle instanceof ActionBarDrawerToggle) {
+                        drawerLayout.removeDrawerListener((ActionBarDrawerToggle) existingToggle);
+                    }
+                }
+                
+                // Create a new drawer toggle
+                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this,
+                    drawerLayout,
+                    toolbar,
+                    R.string.navigation_drawer_open,
+                    R.string.navigation_drawer_close
+                );
+                
+                // Store the toggle for later cleanup
+                drawerLayout.setTag(R.id.drawer_layout, toggle);
+                drawerLayout.addDrawerListener(toggle);
+                toggle.syncState();
+        
+                // Enable the drawer toggle
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                    getSupportActionBar().setHomeButtonEnabled(true);
+                    
+                    // Set title based on current fragment
+                    Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                    if (currentFragment instanceof Homefragment || currentFragment instanceof LawyerDashboardFragment) {
+                        getSupportActionBar().setTitle("");
+                    } else if (currentFragment instanceof AIAssistantFragment) {
+                        getSupportActionBar().setTitle("AI Assistant");
+                    } else if (currentFragment instanceof CaseManagementFragment) {
+                        getSupportActionBar().setTitle("Case Management");
+                    } else if (currentFragment instanceof LegalResourcesFragment) {
+                        getSupportActionBar().setTitle("Legal Resources");
+                    } else {
+                        getSupportActionBar().setTitle(R.string.app_name);
+                    }
+                }
+                
+                // Reset toolbar background color to deep blue
+                toolbar.setBackgroundColor(getResources().getColor(R.color.deep_blue));
+                
+                // Force menu refresh
+                invalidateOptionsMenu();
+            }
+        } catch (Exception e) {
+            Log.e("MainActivity", "Error resetting toolbar", e);
+        }
     }
 }

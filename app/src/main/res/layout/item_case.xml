@@ -5,56 +5,134 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#000000"
+    app:strokeWidth="1dp"
+    app:strokeColor="#3A5D85">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Case Title and Status -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/caseTitleText"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:text="land"
+                android:textColor="#FFFFFF"/>
 
             <TextView
-                android:id="@+id/caseNumberText"
+                android:id="@+id/statusChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/status_chip_background"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:text="ACTIVE"/>
+        </LinearLayout>
+
+        <!-- Case Details -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+                
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_case"
+                    app:tint="#FFFFFF" />
+                
+                <TextView
+                    android:id="@+id/caseNumberText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="1"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/courtText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp"
+                android:text="Civil Court"
+                android:textColor="#E0E0E0" />
 
-            <TextView
-                android:id="@+id/filingDateText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"/>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+                
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="#FFFFFF" />
+                
+                <TextView
+                    android:id="@+id/filingDateText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="22/12/2024"
+                    android:textColor="#E0E0E0" />
+            </LinearLayout>
         </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="8dp"
-            android:src="@drawable/ic_delete"
-            android:contentDescription="Delete case"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/viewDetailsButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="4dp"
+                android:text="View Details"
+                style="@style/ViewDetailsButton"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/deleteButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="4dp"
+                android:text="Delete"
+                style="@style/DeleteButton"/>
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView> 

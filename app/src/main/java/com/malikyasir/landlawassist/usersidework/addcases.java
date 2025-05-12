@@ -47,6 +47,12 @@ public class addcases extends BottomSheetDialogFragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_addcases, container, false);
 
+        // Apply deep blue styling to the dialog
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            // Set the bottom sheet background to white with rounded top corners
+            getDialog().getWindow().setBackgroundDrawableResource(R.drawable.bottom_sheet_background);
+        }
+
         // Initialize views
         titleInput = view.findViewById(R.id.titleInput);
         descriptionInput = view.findViewById(R.id.descriptionInput);

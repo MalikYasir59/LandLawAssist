@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@drawable/gradient_activity_background">
 
     <!-- Main Layout -->
     <LinearLayout
@@ -12,31 +12,12 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- AppBar with Title and Filter Chips -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/rating_bar_tint"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar">
-
-            <!-- Title -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="Cases Management"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
         <!-- Clients Section (For Lawyers) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
+            >
 
             <!-- Clients Section Title -->
             <TextView
@@ -87,10 +68,11 @@
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/rating_bar_tint"
+                android:background="@drawable/gradient_deep_blue_background"
                 android:scrollbars="none"
                 android:paddingHorizontal="16dp"
-                android:paddingBottom="8dp">
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/statusChipGroup"
@@ -105,6 +87,8 @@
                         android:layout_height="wrap_content"
                         android:text="Active"
                         android:tag="ACTIVE"
+                        app:chipBackgroundColor="@color/white"
+                        android:textColor="@color/black"
                         style="@style/Widget.MaterialComponents.Chip.Filter" />
 
                     <!-- Pending Chip -->
@@ -114,6 +98,8 @@
                         android:layout_height="wrap_content"
                         android:text="Pending"
                         android:tag="PENDING"
+                        app:chipBackgroundColor="@color/white"
+                        android:textColor="@color/black"
                         style="@style/Widget.MaterialComponents.Chip.Filter" />
 
                     <!-- Closed Chip -->
@@ -123,6 +109,8 @@
                         android:layout_height="wrap_content"
                         android:text="Closed"
                         android:tag="CLOSED"
+                        app:chipBackgroundColor="@color/white"
+                        android:textColor="@color/black"
                         style="@style/Widget.MaterialComponents.Chip.Filter" />
 
                 </com.google.android.material.chip.ChipGroup>
@@ -139,7 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="8dp"
-                    android:background="#F4F2F2"
+                    android:background="@color/deep_blue"
                     android:clipToPadding="false" />
 
                 <!-- Empty State -->
@@ -166,7 +154,7 @@
                         android:layout_marginTop="16dp"
                         android:text="No cases found"
                         android:textSize="18sp"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@color/black" />
 
                 </LinearLayout>
 
@@ -191,7 +179,7 @@
         android:layout_marginRight="20dp"
         android:contentDescription="Add Case"
         android:src="@drawable/ic_add"
-        app:backgroundTint="#009688"
+        app:backgroundTint="#00BCD4"
         app:tint="@color/white"
         app:elevation="6dp"
         app:fabSize="normal" />

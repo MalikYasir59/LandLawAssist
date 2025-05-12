@@ -3,9 +3,9 @@ package com.malikyasir.landlawassist.Adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.malikyasir.landlawassist.Modelss.Case;
@@ -52,6 +52,33 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             holder.filingDateText.setText("");
         }
         
+        // Set status chip text and color
+        String status = caseItem.getStatus();
+        if (status != null) {
+            holder.statusChip.setText(status);
+            
+            // Set chip color based on status
+            int chipColor;
+            switch (status) {
+                case "ACTIVE":
+                    chipColor = holder.itemView.getContext().getResources().getColor(R.color.status_active);
+                    break;
+                case "PENDING":
+                    chipColor = holder.itemView.getContext().getResources().getColor(R.color.status_pending);
+                    break;
+                case "CLOSED":
+                    chipColor = holder.itemView.getContext().getResources().getColor(R.color.status_closed);
+                    break;
+                default:
+                    chipColor = holder.itemView.getContext().getResources().getColor(R.color.colorPrimary);
+                    break;
+            }
+            // For TextView, we need to set the background color directly
+            holder.statusChip.getBackground().setColorFilter(chipColor, android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            holder.statusChip.setText("UNKNOWN");
+        }
+        
         String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         if (caseItem.getUserId().equals(currentUserId)) {
             holder.deleteButton.setVisibility(View.VISIBLE);
@@ -63,6 +90,12 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
         } else {
             holder.deleteButton.setVisibility(View.GONE);
         }
+        
+        holder.viewDetailsButton.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCaseClick(caseItem);
+            }
+        });
         
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
@@ -83,7 +116,8 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
 
     static class CaseViewHolder extends RecyclerView.ViewHolder {
         TextView titleText, caseNumberText, courtText, filingDateText;
-        ImageButton deleteButton;
+        MaterialButton deleteButton, viewDetailsButton;
+        TextView statusChip;
 
         CaseViewHolder(View itemView) {
             super(itemView);
@@ -92,6 +126,8 @@ public class CaseAdapter extends RecyclerView.Adapter<CaseAdapter.CaseViewHolder
             courtText = itemView.findViewById(R.id.courtText);
             filingDateText = itemView.findViewById(R.id.filingDateText);
             deleteButton = itemView.findViewById(R.id.deleteButton);
+            viewDetailsButton = itemView.findViewById(R.id.viewDetailsButton);
+            statusChip = itemView.findViewById(R.id.statusChip);
         }
     }
 } 

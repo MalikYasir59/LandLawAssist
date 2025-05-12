@@ -78,7 +78,7 @@ public class Homefragment extends Fragment {
         userName = view.findViewById(R.id.userName);
         
         profileImage = view.findViewById(R.id.profileImage);
-        notificationBadge = view.findViewById(R.id.notificationBadge);
+
         lawyerViewPager = view.findViewById(R.id.lawyerViewPager);
         clientsRecyclerView = view.findViewById(R.id.clientsRecyclerView);
         noClientsText = view.findViewById(R.id.noClientsText);

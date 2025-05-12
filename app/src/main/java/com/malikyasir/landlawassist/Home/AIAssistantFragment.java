@@ -139,9 +139,18 @@ public class AIAssistantFragment extends Fragment {
             AppCompatActivity activity = (AppCompatActivity) getActivity();
             activity.setSupportActionBar(toolbar);
             
-            // Set title programmatically (removing duplicate)
+            // Don't set title here - let MainActivity handle it
             if (activity.getSupportActionBar() != null) {
                 activity.getSupportActionBar().setTitle("");
+            }
+            
+            // First remove any existing drawer listeners to prevent duplicates
+            if (drawerLayout != null) {
+                // Try to get any existing toggle from the drawer layout
+                Object existingToggle = drawerLayout.getTag(R.id.drawer_layout);
+                if (existingToggle instanceof ActionBarDrawerToggle) {
+                    drawerLayout.removeDrawerListener((ActionBarDrawerToggle) existingToggle);
+                }
             }
             
             // Add a drawer toggle button
@@ -151,6 +160,9 @@ public class AIAssistantFragment extends Fragment {
                     R.string.navigation_drawer_close);
             drawerLayout.addDrawerListener(toggle);
             toggle.syncState();
+            
+            // Store the toggle for cleanup later
+            drawerLayout.setTag(R.id.drawer_layout, toggle);
         }
     }
     
@@ -831,6 +843,61 @@ public class AIAssistantFragment extends Fragment {
         
         interface HistoryItemClickListener {
             void onHistoryItemClick(HistoryItem item);
+        }
+    }
+    
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        
+        // Clean up toolbar to prevent it from persisting in other activities
+        if (getActivity() != null) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            
+            try {
+                // Remove drawer toggle listener
+                if (drawerLayout != null) {
+                    ActionBarDrawerToggle toggle = (ActionBarDrawerToggle) drawerLayout.getTag(R.id.drawer_layout);
+                    if (toggle != null) {
+                        drawerLayout.removeDrawerListener(toggle);
+                    }
+                }
+                
+                // Remove this fragment's toolbar from the activity
+                if (toolbar != null && toolbar.getParent() != null) {
+                    ((ViewGroup) toolbar.getParent()).removeView(toolbar);
+                }
+                
+                // Reset the activity's original toolbar
+                Toolbar mainToolbar = activity.findViewById(R.id.toolbar);
+                if (mainToolbar != null) {
+                    activity.setSupportActionBar(mainToolbar);
+                    
+                    // Reset title and navigation icon
+                    if (activity.getSupportActionBar() != null) {
+                        activity.getSupportActionBar().setTitle(R.string.app_name);
+                        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                        activity.getSupportActionBar().setHomeButtonEnabled(true);
+                    }
+                }
+                
+                // Call resetToolbar on MainActivity
+                if (activity instanceof MainActivity) {
+                    ((MainActivity) activity).resetToolbar();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error cleaning up toolbar", e);
+            }
+        }
+    }
+    
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        
+        // Ensure MainActivity resets its toolbar when this fragment detaches
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).resetToolbar();
         }
     }
 }

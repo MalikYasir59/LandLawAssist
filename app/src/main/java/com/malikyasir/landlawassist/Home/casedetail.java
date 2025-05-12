@@ -52,7 +52,7 @@ public class casedetail extends AppCompatActivity {
     private String caseId;
     private FirebaseFirestore db;
     private SimpleDateFormat dateFormat;
-    private com.google.android.material.chip.Chip statusChip;
+    private TextView statusChip;
     private MaterialButton editStatusButton;
     private String currentStatus = "ACTIVE";
     private RecyclerView notesRecyclerView;
@@ -85,13 +85,15 @@ public class casedetail extends AppCompatActivity {
             return;
         }
 
-        // Initialize views
+        // Set up toolbar - using the toolbar from layout
         Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Case Details");
-
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            if (getSupportActionBar() != null) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("Case Details");
+            }
+        }
 
         nextHearingTextView = findViewById(R.id.nextHearing);
         MaterialButton addHearingButton = findViewById(R.id.addHearingButton);
@@ -235,7 +237,7 @@ public class casedetail extends AppCompatActivity {
                 backgroundColor = getResources().getColor(R.color.status_default);
         }
         
-        statusChip.setChipBackgroundColor(ColorStateList.valueOf(backgroundColor));
+        statusChip.setBackgroundTintList(ColorStateList.valueOf(backgroundColor));
         statusChip.setTextColor(textColor);
     }
 
@@ -251,26 +253,29 @@ public class casedetail extends AppCompatActivity {
                         nextHearingTextView.setText(dateFormat.format(selectedDate.getTime()));
                     }
                     
-                    // Load other case details...
-                    TextView caseNumberView = findViewById(R.id.caseNumber);
-                    TextView courtView = findViewById(R.id.court);
-                    TextView descriptionView = findViewById(R.id.description);
-                    
-                    caseNumberView.setText(documentSnapshot.getString("caseNumber"));
-                    courtView.setText(documentSnapshot.getString("court"));
-                    descriptionView.setText(documentSnapshot.getString("description"));
-                    
                     // Load status
-                    currentStatus = documentSnapshot.getString("status");
-                    if (currentStatus == null) {
-                        currentStatus = "ACTIVE"; // Default status
+                    String status = documentSnapshot.getString("status");
+                    if (status != null) {
+                        currentStatus = status;
+                        updateStatusChip();
                     }
-                    updateStatusChip();
+                    
+                    // Load other case details...
+                    TextView caseTitleView = findViewById(R.id.caseTitleText);
+                    TextView courtView = findViewById(R.id.courtText);
+                    
+                    caseTitleView.setText(documentSnapshot.getString("title"));
+                    courtView.setText(documentSnapshot.getString("court"));
+                } else {
+                    Toast.makeText(this, "Case not found", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
             })
-            .addOnFailureListener(e -> 
+            .addOnFailureListener(e -> {
                 Toast.makeText(this, "Error loading case details: " + e.getMessage(), 
-                    LENGTH_SHORT).show());
+                    Toast.LENGTH_SHORT).show();
+                finish();
+            });
     }
 
     private void showAddNoteDialog() {
@@ -524,5 +529,14 @@ public class casedetail extends AppCompatActivity {
             .addOnFailureListener(e -> 
                 Toast.makeText(this, "Error loading documents: " + e.getMessage(), 
                     LENGTH_SHORT).show());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
