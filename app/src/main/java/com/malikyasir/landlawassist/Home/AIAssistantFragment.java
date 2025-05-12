@@ -62,6 +62,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Date;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+
 public class AIAssistantFragment extends Fragment {
     private static final String TAG = "AIAssistant";
     private static final String API_KEY = "AIzaSyDI6fleKK247teHea5H72kDsIMyWbBRxOU"; // Gemini API key
@@ -131,6 +134,9 @@ public class AIAssistantFragment extends Fragment {
         answerText = view.findViewById(R.id.answerText);
         referencesText = view.findViewById(R.id.referencesText);
         progressIndicator = view.findViewById(R.id.progressIndicator);
+        
+        // Set the progress indicator color to black for better visibility
+        progressIndicator.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
     }
     
     private void setupDrawer() {
@@ -293,6 +299,10 @@ public class AIAssistantFragment extends Fragment {
         
         // Show progress
         progressIndicator.setVisibility(View.VISIBLE);
+        progressIndicator.setIndeterminateTintList(ColorStateList.valueOf(Color.BLACK));
+        
+        // Show loading text in the answer area
+        answerText.setText("Processing your query...");
         
         // Add to history if not already exists
         boolean isNewQuery = true;
@@ -410,6 +420,11 @@ public class AIAssistantFragment extends Fragment {
                     String finalAnswer = answer;
                     String originalQuery = queryInput.getText().toString().trim();
                     requireActivity().runOnUiThread(() -> {
+                        // Clear the loading text first
+                        if (answerText.getText().toString().equals("Processing your query...")) {
+                            answerText.setText("");
+                        }
+                        
                         updateAnswerText(finalAnswer);
                         
                         // Save the answer to history
@@ -427,6 +442,11 @@ public class AIAssistantFragment extends Fragment {
                 } catch (Exception e) {
                     Log.e(TAG, "Error parsing API response", e);
                     requireActivity().runOnUiThread(() -> {
+                        // Clear the loading text first
+                        if (answerText.getText().toString().equals("Processing your query...")) {
+                            answerText.setText("");
+                        }
+                        
                         updateAnswerText("Error processing response: " + e.getMessage());
                         progressIndicator.setVisibility(View.GONE);
                     });
